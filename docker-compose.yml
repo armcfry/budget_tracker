@@ -1,0 +1,90 @@
+services:
+
+  # -------------------------------------------------------
+  # DATABASE — Postgres 16
+  # -------------------------------------------------------
+  db:
+    image: postgres:16
+    container_name: finance_db
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${DB_NAME}
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data # persistent data
+      - ./db/schema.sql:/docker-entrypoint-initdb.d/01_schema.sql # auto-runs on first init
+    ports:
+      - "5432:5432" # expose locally for tools like TablePlus / pgAdmin
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U ${DB_USER} -d ${DB_NAME}" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # -------------------------------------------------------
+  # BACKEND — FastAPI + Python (served via uvicorn)
+  # -------------------------------------------------------
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: finance_backend
+    restart: unless-stopped
+    environment:
+      DATABASE_URL: postgresql://${DB_USER}:${DB_PASSWORD}@db:5432/${DB_NAME}
+      APP_ENV: ${APP_ENV:-development}
+      SECRET_KEY: ${SECRET_KEY}
+    volumes:
+      - ./backend:/app # mount source for hot-reload in dev
+    ports:
+      - "8000:8000"
+    depends_on:
+      db:
+        condition: service_healthy
+
+  # -------------------------------------------------------
+  # FRONTEND — React + TypeScript (Next.js)
+  # -------------------------------------------------------
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: finance_frontend
+    restart: unless-stopped
+    environment:
+      NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL:-http://localhost:8000}
+    volumes:
+      - ./frontend/budget-tracker:/app
+      - /app/node_modules # keep node_modules inside container
+      - /app/.next # keep next build cache inside container
+    ports:
+      - "3000:3000"
+    depends_on:
+      - backend
+
+  # -------------------------------------------------------
+  # PGADMIN — visual DB browser (opt-in via --profile tools)
+  # Usage: docker compose --profile tools up
+  # Then open: http://localhost:5050
+  # -------------------------------------------------------
+  pgadmin:
+    image: dpage/pgadmin4
+    container_name: finance_pgadmin
+    restart: unless-stopped
+    environment:
+      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_EMAIL}
+      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_PASSWORD}
+    ports:
+      - "5050:80"
+    depends_on:
+      - db
+    profiles:
+      - tools
+
+# -------------------------------------------------------
+# VOLUMES
+# -------------------------------------------------------
+volumes:
+  postgres_data:
+    driver: local
