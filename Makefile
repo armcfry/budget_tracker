@@ -2,7 +2,7 @@
 
 # Start all containers
 up:
-	docker compose up -d
+	source ./set_env.sh && docker compose up -d
 
 # Bring containers down, keep data intact
 down:
