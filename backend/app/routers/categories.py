@@ -8,12 +8,12 @@ router = APIRouter(prefix="/categories", tags=["categories"])
 
 
 @router.get("", response_model=list[Category])
-def list_categories(db: Session = Depends(get_db)):
+def list_categories(db: Session = Annotated[Depends(get_db)]):
     return svc.get_categories(db)
 
 
 @router.get("/{category_id}", response_model=Category)
-def get_category(category_id: int, db: Session = Depends(get_db)):
+def get_category(category_id: int, db: Session = Annotated[Depends(get_db)]):
     row = svc.get_category(db, category_id)
     if not row:
         raise HTTPException(status_code=404, detail="Category not found")
@@ -21,12 +21,12 @@ def get_category(category_id: int, db: Session = Depends(get_db)):
 
 
 @router.post("", response_model=Category, status_code=201)
-def create_category(data: CategoryCreate, db: Session = Depends(get_db)):
+def create_category(data: CategoryCreate, db: Session = Annotated[Depends(get_db)]):
     return svc.create_category(db, data)
 
 
 @router.patch("/{category_id}", response_model=Category)
-def update_category(category_id: int, data: CategoryUpdate, db: Session = Depends(get_db)):
+def update_category(category_id: int, data: CategoryUpdate, db: Session = Annotated[Depends(get_db)]):
     row = svc.update_category(db, category_id, data)
     if not row:
         raise HTTPException(status_code=404, detail="Category not found")
@@ -34,6 +34,6 @@ def update_category(category_id: int, data: CategoryUpdate, db: Session = Depend
 
 
 @router.delete("/{category_id}", status_code=204)
-def delete_category(category_id: int, db: Session = Depends(get_db)):
+def delete_category(category_id: int, db: Session = Annotated[Depends(get_db)]):
     if not svc.delete_category(db, category_id):
         raise HTTPException(status_code=404, detail="Category not found")
