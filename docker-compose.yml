@@ -13,7 +13,7 @@ services:
       POSTGRES_PASSWORD: ${DB_PASSWORD}
     volumes:
       - postgres_data:/var/lib/postgresql/data # persistent data
-      - ./db/schema.sql:/docker-entrypoint-initdb.d/01_schema.sql # auto-runs on first init
+      - ./backend/app/db/schema.sql:/docker-entrypoint-initdb.d/01_schema.sql
     ports:
       - "5432:5432" # expose locally for tools like TablePlus / pgAdmin
     healthcheck:
