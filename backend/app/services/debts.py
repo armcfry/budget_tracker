@@ -6,7 +6,7 @@ from app.schemas.debt import DebtCreate, DebtUpdate
 def get_debts(db: Session, active_only: bool = True) -> list[Debt]:
     q = db.query(Debt)
     if active_only:
-        q = q.filter(Debt.is_active == True)
+        q = q.filter(Debt.is_active.is_(True))
     return q.order_by(Debt.name).all()
 
 

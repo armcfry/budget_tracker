@@ -7,8 +7,10 @@ def get_settings(db: Session) -> Settings | None:
     return db.query(Settings).first()
 
 
-def update_settings(db: Session, data: SettingsUpdate) -> Settings:
+def update_settings(db: Session, data: SettingsUpdate) -> Settings | None:
     row = db.query(Settings).first()
+    if not row:
+        return None
     for field, value in data.model_dump(exclude_unset=True).items():
         setattr(row, field, value)
     db.commit()

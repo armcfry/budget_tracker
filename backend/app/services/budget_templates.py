@@ -6,7 +6,7 @@ from app.schemas.budget_template import BudgetTemplateCreate, BudgetTemplateUpda
 def get_budget_templates(db: Session, active_only: bool = True) -> list[BudgetTemplate]:
     q = db.query(BudgetTemplate)
     if active_only:
-        q = q.filter(BudgetTemplate.is_active == True)
+        q = q.filter(BudgetTemplate.is_active.is_(True))
     return q.all()
 
 

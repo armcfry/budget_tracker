@@ -6,7 +6,7 @@ from app.schemas.recurring_transaction import RecurringTransactionCreate, Recurr
 def get_recurring_transactions(db: Session, active_only: bool = True) -> list[RecurringTransaction]:
     q = db.query(RecurringTransaction)
     if active_only:
-        q = q.filter(RecurringTransaction.is_active == True)
+        q = q.filter(RecurringTransaction.is_active.is_(True))
     return q.order_by(RecurringTransaction.title).all()
 
 

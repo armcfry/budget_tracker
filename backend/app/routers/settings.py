@@ -8,15 +8,20 @@ import app.services.settings as svc
 
 router = APIRouter(prefix="/settings", tags=["settings"])
 
+SETTINGS_NOT_FOUND = "Settings not found"
 
-@router.get("", response_model=Settings)
-def read_settings(db: Session = Annotated[Depends(get_db)]):
+
+@router.get("", response_model=Settings, responses={404: {"description": SETTINGS_NOT_FOUND}})
+def read_settings(db: Annotated[Session, Depends(get_db)] = None):
     row = svc.get_settings(db)
     if not row:
-        raise HTTPException(status_code=404, detail="Settings not found")
+        raise HTTPException(status_code=404, detail=SETTINGS_NOT_FOUND)
     return row
 
 
-@router.patch("", response_model=Settings)
-def update_settings(data: SettingsUpdate, db: Session = Annotated[Depends(get_db)]):
-    return svc.update_settings(db, data)
+@router.patch("", response_model=Settings, responses={404: {"description": SETTINGS_NOT_FOUND}})
+def update_settings(data: SettingsUpdate, db: Annotated[Session, Depends(get_db)] = None):
+    row = svc.update_settings(db, data)
+    if not row:
+        raise HTTPException(status_code=404, detail=SETTINGS_NOT_FOUND)
+    return row

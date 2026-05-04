@@ -6,7 +6,7 @@ from app.schemas.account import AccountCreate, AccountUpdate
 def get_accounts(db: Session, active_only: bool = True) -> list[Account]:
     q = db.query(Account)
     if active_only:
-        q = q.filter(Account.is_active == True)
+        q = q.filter(Account.is_active.is_(True))
     return q.order_by(Account.name).all()
 
 
