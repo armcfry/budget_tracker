@@ -9,6 +9,5 @@ class Account(Base):
     name = Column(String(100), nullable=False)
     type = Column(String(50), nullable=False)
     nickname = Column(String(100))
-    last_four = Column(String(4))
     is_active = Column(Boolean, default=True)
     created_at = Column(DateTime(timezone=True), server_default=func.now())

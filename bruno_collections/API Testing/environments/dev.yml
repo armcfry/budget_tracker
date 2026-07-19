@@ -1,0 +1,6 @@
+name: dev
+variables:
+  - name: host
+    value: localhost
+  - name: port
+    value: "8000"

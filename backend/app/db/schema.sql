@@ -24,10 +24,9 @@ CREATE TABLE accounts (
     id          SERIAL PRIMARY KEY,
     name        VARCHAR(100) NOT NULL,
     type        VARCHAR(50)  NOT NULL CHECK (type IN (
-                    'checking', 'savings', 'credit_card', 'cash', 'other'
+                    'checking', 'savings', 'credit_card', 'other'
                 )),
     nickname    VARCHAR(100),
-    last_four   CHAR(4),
     is_active   BOOLEAN DEFAULT TRUE,
     created_at  TIMESTAMPTZ DEFAULT NOW()
 );
@@ -91,19 +90,6 @@ CREATE TABLE debts (
     notes               TEXT,
     created_at          TIMESTAMPTZ DEFAULT NOW(),
     updated_at          TIMESTAMPTZ DEFAULT NOW()
-);
-
-
--- --------------------------------------------------------
--- BUDGET TEMPLATES (default monthly allocation per category)
--- --------------------------------------------------------
-CREATE TABLE budget_templates (
-    id              SERIAL PRIMARY KEY,
-    category_id     INT          NOT NULL REFERENCES categories(id) UNIQUE,
-    amount          DECIMAL(12,2) NOT NULL,
-    is_active       BOOLEAN DEFAULT TRUE,
-    created_at      TIMESTAMPTZ DEFAULT NOW(),
-    updated_at      TIMESTAMPTZ DEFAULT NOW()
 );
 
 
@@ -190,9 +176,6 @@ CREATE TRIGGER set_updated_at BEFORE UPDATE ON settings
     FOR EACH ROW EXECUTE FUNCTION trigger_set_updated_at();
 
 CREATE TRIGGER set_updated_at BEFORE UPDATE ON debts
-    FOR EACH ROW EXECUTE FUNCTION trigger_set_updated_at();
-
-CREATE TRIGGER set_updated_at BEFORE UPDATE ON budget_templates
     FOR EACH ROW EXECUTE FUNCTION trigger_set_updated_at();
 
 CREATE TRIGGER set_updated_at BEFORE UPDATE ON recurring_transactions

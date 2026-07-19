@@ -12,7 +12,6 @@ class DebtCreate(BaseModel):
     original_balance: Decimal
     current_balance: Decimal
     interest_rate: Optional[Decimal] = None
-    minimum_payment: Optional[Decimal] = None
     due_day_of_month: Optional[int] = None
     account_id: Optional[int] = None
     is_active: bool = True
@@ -24,7 +23,6 @@ class DebtUpdate(BaseModel):
     type: Optional[DebtType] = None
     current_balance: Optional[Decimal] = None
     interest_rate: Optional[Decimal] = None
-    minimum_payment: Optional[Decimal] = None
     due_day_of_month: Optional[int] = None
     account_id: Optional[int] = None
     is_active: Optional[bool] = None
@@ -38,7 +36,6 @@ class Debt(BaseModel):
     original_balance: Decimal
     current_balance: Decimal
     interest_rate: Optional[Decimal]
-    minimum_payment: Optional[Decimal]
     due_day_of_month: Optional[int]
     account_id: Optional[int]
     is_active: bool

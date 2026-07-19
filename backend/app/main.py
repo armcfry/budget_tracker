@@ -9,7 +9,6 @@ from app.routers import (
     categories,
     tags,
     debts,
-    budget_templates,
     monthly_budgets,
     recurring_transactions,
     transactions,
@@ -30,7 +29,6 @@ app.include_router(accounts.router)
 app.include_router(categories.router)
 app.include_router(tags.router)
 app.include_router(debts.router)
-app.include_router(budget_templates.router)
 app.include_router(monthly_budgets.router)
 app.include_router(recurring_transactions.router)
 app.include_router(transactions.router)
