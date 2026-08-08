@@ -1,6 +1,7 @@
 from sqlalchemy import Table, Column, Integer, ForeignKey
 from app.db.session import Base
 
+# many to many relationship between transactions and tags
 transaction_tags = Table(
     "transaction_tags",
     Base.metadata,

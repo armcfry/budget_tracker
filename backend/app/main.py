@@ -4,13 +4,8 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from app.routers import (
-    settings,
     accounts,
-    categories,
     tags,
-    debts,
-    monthly_budgets,
-    recurring_transactions,
     transactions,
 )
 
@@ -24,13 +19,8 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-app.include_router(settings.router)
 app.include_router(accounts.router)
-app.include_router(categories.router)
 app.include_router(tags.router)
-app.include_router(debts.router)
-app.include_router(monthly_budgets.router)
-app.include_router(recurring_transactions.router)
 app.include_router(transactions.router)
 
 
