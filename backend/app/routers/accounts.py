@@ -1,4 +1,4 @@
-from typing import Annotated
+from typing import Annotated, Optional
 
 import app.services.accounts as svc
 from app.db.session import get_db
@@ -14,16 +14,23 @@ ACCOUNT_NOT_FOUND = "Account not found"
 @router.get("", response_model=list[AccountRead])
 def list_accounts(
     db: Annotated[Session, Depends(get_db)] = None,
+    account_type: Optional[str] = None,
 ):
-    return svc.get_accounts(db)
+    try:
+        return svc.get_accounts(db, account_type)
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail=str(e))
 
 
 @router.get(
     "/{account_id}",
-    response_model=Account,
+    response_model=AccountRead,
     responses={404: {"description": ACCOUNT_NOT_FOUND}},
 )
-def get_account(account_id: int, db: Annotated[Session, Depends(get_db)] = None):
+def get_account(
+    account_id: int,
+    db: Annotated[Session, Depends(get_db)] = None,
+):
     row = svc.get_account(db, account_id)
     if not row:
         raise HTTPException(status_code=404, detail=ACCOUNT_NOT_FOUND)

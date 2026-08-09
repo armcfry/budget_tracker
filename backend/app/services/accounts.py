@@ -1,17 +1,27 @@
 from app.models.account import Account, AccountCreate, AccountUpdate
-from sqlalchemy.orm import Session
-
 from app.models.wallet import Wallet
+from sqlalchemy.orm import Session
 
 VALID_ACCOUNT_TYPES = ["checking", "savings", "credit_card"]
 
-def get_accounts(db: Session) -> list[Account]:
-    q = db.query(Account)
+
+def get_accounts(db: Session, account_type: str) -> list[Account]:
+    if account_type is not None:
+        if account_type in VALID_ACCOUNT_TYPES:
+            q = db.query(Account).filter(Account.type == account_type)
+        else:
+            raise ValueError(
+                f"Invalid query param for account_type. Must be one of: {VALID_ACCOUNT_TYPES}"
+            )
+    else:
+        q = db.query(Account)
     return q.order_by(Account.name).all()
 
 
 def get_account(db: Session, account_id: int) -> Account | None:
-    return db.query(Account).filter(Account.id == account_id).first()
+    q = db.query(Account).filter(Account.id == account_id)
+
+    return q.first()
 
 
 def create_account(db: Session, data: AccountCreate) -> Account:
