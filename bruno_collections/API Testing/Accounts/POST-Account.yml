@@ -1,0 +1,32 @@
+info:
+  name: POST-Account
+  type: http
+  seq: 2
+
+http:
+  method: POST
+  url: "{{host}}:{{port}}/accounts"
+  body:
+    type: json
+    data: |-
+      {
+       "name": "{{account_name}}", 
+       "type": "{{account_type}}", 
+       "wallet_id": {{wallet_id}}
+      }
+  auth: inherit
+
+runtime:
+  variables:
+    - name: account_name
+      value: Apple Card
+    - name: account_type
+      value: credit_card
+    - name: wallet_id
+      value: "1"
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
