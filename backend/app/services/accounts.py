@@ -1,5 +1,4 @@
-from app.models.account import Account
-from app.schemas.account import AccountCreate, AccountUpdate
+from app.models.account import Account, AccountCreate, AccountUpdate
 from sqlalchemy.orm import Session
 
 

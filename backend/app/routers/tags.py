@@ -2,7 +2,7 @@ from typing import Annotated
 
 import app.services.tags as svc
 from app.db.session import get_db
-from app.schemas.tag import Tag, TagCreate
+from app.models.tag import Tag, TagCreate
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 

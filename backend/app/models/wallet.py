@@ -1,12 +1,24 @@
-from sqlalchemy import Column, Float, Integer, String
+from decimal import Decimal
+from typing import Optional
 
-from app.db.session import Base
+from sqlmodel import Field, SQLModel
 
 
-class Wallet(Base):
+class WalletBase(SQLModel):
+    name: str
+    total_balance: Decimal = Decimal("0.00")
+    total_spend: Decimal = Decimal("0.00")
+
+
+class Wallet(WalletBase, table=True):
     __tablename__ = "wallets"
 
-    id = Column(Integer, primary_key=True)
-    name = Column(String(100), nullable=False)
-    total_balance = Column(Float, nullable=False, default=0)
-    total_spend = Column(Float, nullable=False, default=0)
+    id: Optional[int] = Field(default=None, primary_key=True)
+
+
+class WalletCreate(WalletBase):
+    pass
+
+
+class WalletUpdate(SQLModel):
+    name: Optional[str] = None

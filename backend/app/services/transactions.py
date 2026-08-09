@@ -1,13 +1,12 @@
 from app.models.tag import Tag
-from app.models.transaction import Transaction
-from app.schemas.transaction import TransactionCreate, TransactionUpdate
+from app.models.transaction import Transaction, TransactionCreate, TransactionUpdate
 from sqlalchemy.orm import Session, joinedload
 
 
 def get_transactions(
     db: Session,
 ) -> list[Transaction]:
-    return db.query(Transaction).all()
+    return db.query(Transaction).order_by(Transaction.date_value).all()
 
 
 def get_transaction(db: Session, transaction_id: int) -> Transaction | None:

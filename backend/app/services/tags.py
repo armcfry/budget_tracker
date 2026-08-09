@@ -1,10 +1,9 @@
-from app.models.tag import Tag
-from app.schemas.tag import TagCreate
+from app.models.tag import Tag, TagCreate
 from sqlalchemy.orm import Session
 
 
 def get_tags(db: Session) -> list[Tag]:
-    return db.query(Tag).order_by(Tag.name).all()
+    return db.query(Tag).order_by(Tag.id).all()
 
 
 def get_tag(db: Session, tag_id: int) -> Tag | None:

@@ -2,7 +2,7 @@ from typing import Annotated
 
 import app.services.accounts as svc
 from app.db.session import get_db
-from app.schemas.account import Account, AccountCreate, AccountUpdate
+from app.models.account import Account, AccountCreate, AccountUpdate
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 

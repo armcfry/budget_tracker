@@ -1,10 +1,9 @@
-from datetime import date
 from typing import Annotated
 
 import app.services.transactions as svc
 from app.db.session import get_db
-from app.schemas.transaction import Transaction, TransactionCreate, TransactionUpdate
-from fastapi import APIRouter, Depends, HTTPException, Query
+from app.models.transaction import Transaction, TransactionCreate, TransactionUpdate
+from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 
 router = APIRouter(prefix="/transactions", tags=["transactions"])

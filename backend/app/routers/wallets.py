@@ -1,11 +1,10 @@
 import app.services.wallets as svc
-from app.schemas.wallet import Wallet
+from app.db.session import get_db
+from app.models.wallet import Wallet
 from fastapi import APIRouter, HTTPException
 from fastapi.params import Depends
 from sqlalchemy.orm import Session
 from typing_extensions import Annotated
-
-from app.db.session import get_db
 
 router = APIRouter(prefix="/wallets", tags=["wallets"])
 WALLET_ID_NOT_FOUND = "Wallet ID not found"

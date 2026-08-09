@@ -1,5 +1,4 @@
-from app.models.wallet import Wallet
-from app.schemas.wallet import WalletCreate, WalletUpdate
+from app.models.wallet import Wallet, WalletCreate, WalletUpdate
 from sqlalchemy.orm import Session
 
 

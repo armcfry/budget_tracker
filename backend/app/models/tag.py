@@ -1,11 +1,27 @@
-from app.db.session import Base
-from sqlalchemy import Column, Integer, String
+from datetime import datetime
+from typing import Optional
+
+from sqlmodel import Field, SQLModel
 
 
-class Tag(Base):
+class TagBase(SQLModel):
+    name: str
+    color: Optional[str] = "#000000"
+
+
+class Tag(TagBase, table=True):
     __tablename__ = "tags"
 
-    id = Column(Integer, primary_key=True)
-    name = Column(String(100), nullable=False, unique=True)
-    color = Column(String(7), nullable=False, default="#000000")  # Default color is black
-    created_at = Column(String(100), nullable=False, server_default="CURRENT_TIMESTAMP")
+    id: Optional[int] = Field(default=None, primary_key=True)
+    created_at: Optional[datetime] = Field(
+        default=None
+    )  # DB fills this via server default
+
+
+class TagCreate(TagBase):
+    pass
+
+
+class TagUpdate(SQLModel):
+    name: Optional[str] = None
+    color: Optional[str] = None

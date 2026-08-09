@@ -1,12 +1,25 @@
-from app.db.session import Base
-from sqlalchemy import Column, ForeignKey, Integer, String
+from typing import Optional
+
+from sqlmodel import Field, SQLModel
 
 
-class Account(Base):
+class AccountBase(SQLModel):
+    name: str
+    type: str
+    balance: float = 0.0
+
+
+class Account(AccountBase, table=True):
     __tablename__ = "accounts"
 
-    id = Column(Integer, primary_key=True)
-    wallet_id = Column(Integer, ForeignKey("wallets.id"), nullable=False)
-    name = Column(String(100), nullable=False)
-    type = Column(String(50), nullable=False)
-    balance = Column(Integer, nullable=False, default=0)
+    id: Optional[int] = Field(default=None, primary_key=True)
+    wallet_id: int = Field(foreign_key="wallets.id")
+
+
+class AccountCreate(AccountBase):
+    wallet_id: int
+
+
+class AccountUpdate(SQLModel):
+    name: Optional[str] = None
+    type: Optional[str] = None

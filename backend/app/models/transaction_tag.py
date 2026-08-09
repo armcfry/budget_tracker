@@ -1,17 +1,15 @@
-from app.db.session import Base
-from sqlalchemy import Column, ForeignKey, Integer, Table
+from sqlalchemy import ForeignKey
+from sqlmodel import Column, Field, SQLModel
 
-# many to many relationship between transactions and tags
-transaction_tags = Table(
-    "transaction_tags",
-    Base.metadata,
-    Column(
-        "transaction_id",
-        Integer,
-        ForeignKey("transactions.id", ondelete="CASCADE"),
-        primary_key=True,
-    ),
-    Column(
-        "tag_id", Integer, ForeignKey("tags.id", ondelete="CASCADE"), primary_key=True
-    ),
-)
+
+class TransactionTag(SQLModel, table=True):
+    __tablename__ = "transaction_tags"
+
+    transaction_id: int = Field(
+        sa_column=Column(
+            ForeignKey("transactions.id", ondelete="CASCADE"), primary_key=True
+        )
+    )
+    tag_id: int = Field(
+        sa_column=Column(ForeignKey("tags.id", ondelete="CASCADE"), primary_key=True)
+    )
