@@ -1,6 +1,6 @@
-from sqlalchemy.orm import Session
 from app.models.account import Account
 from app.schemas.account import AccountCreate, AccountUpdate
+from sqlalchemy.orm import Session
 
 
 def get_accounts(db: Session) -> list[Account]:

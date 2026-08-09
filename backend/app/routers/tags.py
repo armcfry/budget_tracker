@@ -1,10 +1,10 @@
 from typing import Annotated
 
-from fastapi import APIRouter, Depends, HTTPException
-from sqlalchemy.orm import Session
+import app.services.tags as svc
 from app.db.session import get_db
 from app.schemas.tag import Tag, TagCreate
-import app.services.tags as svc
+from fastapi import APIRouter, Depends, HTTPException
+from sqlalchemy.orm import Session
 
 router = APIRouter(prefix="/tags", tags=["tags"])
 
@@ -21,7 +21,9 @@ def create_tag(data: TagCreate, db: Annotated[Session, Depends(get_db)] = None):
     return svc.create_tag(db, data)
 
 
-@router.delete("/{tag_id}", status_code=204, responses={404: {"description": TAG_NOT_FOUND}})
+@router.delete(
+    "/{tag_id}", status_code=204, responses={404: {"description": TAG_NOT_FOUND}}
+)
 def delete_tag(tag_id: int, db: Annotated[Session, Depends(get_db)] = None):
     if not svc.delete_tag(db, tag_id):
         raise HTTPException(status_code=404, detail=TAG_NOT_FOUND)

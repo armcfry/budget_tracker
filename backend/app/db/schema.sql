@@ -10,7 +10,7 @@ CREATE TABLE wallets (
     id              SERIAL PRIMARY KEY,
     name            VARCHAR(100) NOT NULL,
     total_balance   DECIMAL(12,2) NOT NULL DEFAULT 0.00,
-    total_spent     DECIMAL(12,2) NOT NULL DEFAULT 0.00
+    total_spend     DECIMAL(12,2) NOT NULL DEFAULT 0.00
 );
 
 INSERT INTO wallets (name) VALUES ('Default Wallet');
@@ -25,7 +25,8 @@ CREATE TABLE accounts (
     name        VARCHAR(100) NOT NULL,
     type        VARCHAR(50)  NOT NULL CHECK (type IN (
                     'checking', 'savings', 'credit_card', 'other'
-                ))
+                )),
+    balance     DECIMAL(12,2) NOT NULL DEFAULT 0.00
 );
 
 
@@ -64,13 +65,13 @@ INSERT INTO tags (name, color) VALUES
 CREATE TABLE transactions (
     id                          SERIAL        PRIMARY KEY,
     account_id                  INT           NOT NULL REFERENCES accounts(id),
-    date                        DATE          NOT NULL,
+    date_value                  DATE          NOT NULL,
     description                 VARCHAR(200)  NOT NULL,
     amount                      DECIMAL(12,2) NOT NULL
 );
 
 -- Indexes for common dashboard queries
-CREATE INDEX idx_transactions_date        ON transactions(date);
+CREATE INDEX idx_transactions_date        ON transactions(date_value);
 CREATE INDEX idx_transactions_account     ON transactions(account_id);
 
 

@@ -1,13 +1,13 @@
 import os
 
-from fastapi import FastAPI
-from fastapi.middleware.cors import CORSMiddleware
-
 from app.routers import (
     accounts,
     tags,
     transactions,
+    wallets
 )
+from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 
 app = FastAPI(title="Budget Tracker API")
 
@@ -22,6 +22,7 @@ app.add_middleware(
 app.include_router(accounts.router)
 app.include_router(tags.router)
 app.include_router(transactions.router)
+app.include_router(wallets.router)
 
 
 @app.get("/health")

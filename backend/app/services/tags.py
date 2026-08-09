@@ -1,6 +1,6 @@
-from sqlalchemy.orm import Session
 from app.models.tag import Tag
 from app.schemas.tag import TagCreate
+from sqlalchemy.orm import Session
 
 
 def get_tags(db: Session) -> list[Tag]:
