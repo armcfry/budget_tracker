@@ -2,7 +2,7 @@ from typing import Annotated
 
 import app.services.accounts as svc
 from app.db.session import get_db
-from app.models.account import Account, AccountCreate, AccountUpdate
+from app.models.account import Account, AccountCreate, AccountRead, AccountUpdate
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 
@@ -11,7 +11,7 @@ router = APIRouter(prefix="/accounts", tags=["accounts"])
 ACCOUNT_NOT_FOUND = "Account not found"
 
 
-@router.get("", response_model=list[Account])
+@router.get("", response_model=list[AccountRead])
 def list_accounts(
     db: Annotated[Session, Depends(get_db)] = None,
 ):
@@ -32,7 +32,11 @@ def get_account(account_id: int, db: Annotated[Session, Depends(get_db)] = None)
 
 @router.post("", response_model=Account, status_code=201)
 def create_account(data: AccountCreate, db: Annotated[Session, Depends(get_db)] = None):
-    return svc.create_account(db, data)
+    try:
+        success = svc.create_account(db, data)
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail=str(e))
+    return success
 
 
 @router.patch(

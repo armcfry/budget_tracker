@@ -1,6 +1,9 @@
 from app.models.account import Account, AccountCreate, AccountUpdate
 from sqlalchemy.orm import Session
 
+from app.models.wallet import Wallet
+
+VALID_ACCOUNT_TYPES = ["checking", "savings", "credit_card"]
 
 def get_accounts(db: Session) -> list[Account]:
     q = db.query(Account)
@@ -13,6 +16,12 @@ def get_account(db: Session, account_id: int) -> Account | None:
 
 def create_account(db: Session, data: AccountCreate) -> Account:
     row = Account(**data.model_dump())
+    if data.type not in VALID_ACCOUNT_TYPES:
+        raise ValueError(f"Invalid account type. Must be one of: {VALID_ACCOUNT_TYPES}")
+
+    if db.get(Wallet, data.wallet_id) is None:
+        raise ValueError(f"Invalid wallet_id. Wallet {data.wallet_id} does not exist.")
+
     db.add(row)
     db.commit()
     db.refresh(row)

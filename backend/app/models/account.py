@@ -23,3 +23,11 @@ class AccountCreate(AccountBase):
 class AccountUpdate(SQLModel):
     name: Optional[str] = None
     type: Optional[str] = None
+
+
+class AccountRead(SQLModel):
+    id: int
+    name: str
+    type: str
+    balance: float
+    wallet_id: int
