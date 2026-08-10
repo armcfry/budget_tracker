@@ -14,6 +14,7 @@ WALLET_ID_NOT_FOUND = "Wallet ID not found"
 def list_wallets(
     db: Annotated[Session, Depends(get_db)] = None,
 ):
+
     return svc.get_wallets(db)
 
 

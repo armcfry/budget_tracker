@@ -2,7 +2,11 @@ from typing import Annotated
 
 import app.services.transactions as svc
 from app.db.session import get_db
-from app.models.transaction import Transaction, TransactionCreate, TransactionUpdate
+from app.models.transaction import (
+    TransactionCreate,
+    TransactionRead,
+    TransactionUpdate,
+)
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 
@@ -10,7 +14,7 @@ router = APIRouter(prefix="/transactions", tags=["transactions"])
 TRANSACTION_NOT_FOUND = "Transaction not found"
 
 
-@router.get("", response_model=list[Transaction])
+@router.get("", response_model=list[TransactionRead])
 def list_transactions(
     db: Annotated[Session, Depends(get_db)] = None,
 ):
@@ -19,7 +23,7 @@ def list_transactions(
 
 @router.get(
     "/{transaction_id}",
-    response_model=Transaction,
+    response_model=TransactionRead,
     responses={404: {"description": TRANSACTION_NOT_FOUND}},
 )
 def get_transaction(
@@ -31,7 +35,7 @@ def get_transaction(
     return row
 
 
-@router.post("", response_model=Transaction, status_code=201)
+@router.post("", response_model=TransactionRead, status_code=201)
 def create_transaction(
     data: TransactionCreate, db: Annotated[Session, Depends(get_db)] = None
 ):
@@ -40,7 +44,7 @@ def create_transaction(
 
 @router.patch(
     "/{transaction_id}",
-    response_model=Transaction,
+    response_model=TransactionRead,
     responses={404: {"description": TRANSACTION_NOT_FOUND}},
 )
 def update_transaction(

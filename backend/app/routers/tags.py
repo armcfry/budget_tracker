@@ -34,6 +34,7 @@ def update_tag(
         row = svc.update_tag(db, tag_id, data)
     except ValueError as e:
         raise HTTPException(status_code=400, detail=str(e))
+
     if not row:
         raise HTTPException(status_code=404, detail=TAG_NOT_FOUND)
     return row

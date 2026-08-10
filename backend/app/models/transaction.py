@@ -22,7 +22,7 @@ class Transaction(TransactionBase, table=True):
 
 
 class TransactionCreate(TransactionBase):
-    tag_ids: List[int] = []  # handled in the service layer, not a DB column
+    tags: List[str] = []  # tag names; handled in the service layer, not a DB column
 
 
 class TransactionUpdate(SQLModel):
@@ -30,4 +30,9 @@ class TransactionUpdate(SQLModel):
     description: Optional[str] = None
     amount: Optional[Decimal] = None
     account_id: Optional[int] = None
-    tag_ids: Optional[List[int]] = None
+    tags: Optional[List[str]] = None
+
+
+class TransactionRead(TransactionBase):
+    id: int
+    tags: List[Tag] = []

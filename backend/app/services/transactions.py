@@ -3,6 +3,22 @@ from app.models.transaction import Transaction, TransactionCreate, TransactionUp
 from sqlalchemy.orm import Session, joinedload
 
 
+def _resolve_tags(db: Session, tags: list[str]) -> list[Tag]:
+    """Look up tags by name, creating any that don't exist yet."""
+    if not tags:
+        return []
+
+    existing = db.query(Tag).filter(Tag.name.in_(tags)).all()
+    existing_names = {t.name for t in existing}
+
+    new_tags = [Tag(name=name) for name in tags if name not in existing_names]
+    if new_tags:
+        db.add_all(new_tags)
+        db.flush()  # assigns ids to new_tags without committing yet
+
+    return existing + new_tags
+
+
 def get_transactions(
     db: Session,
 ) -> list[Transaction]:
@@ -19,10 +35,11 @@ def get_transaction(db: Session, transaction_id: int) -> Transaction | None:
 
 
 def create_transaction(db: Session, data: TransactionCreate) -> Transaction:
-    tag_ids = data.tag_ids
-    row = Transaction(**data.model_dump(exclude={"tag_ids"}))
-    if tag_ids:
-        row.tags = db.query(Tag).filter(Tag.id.in_(tag_ids)).all()
+    tag_names = data.tags
+    row = Transaction(**data.model_dump(exclude={"tags"}))
+    if tag_names:
+        row.tags = _resolve_tags(db, tag_names)
+
     db.add(row)
     db.commit()
     db.refresh(row)
@@ -36,11 +53,12 @@ def update_transaction(
     if not row:
         return None
     payload = data.model_dump(exclude_unset=True)
-    tag_ids = payload.pop("tag_ids", None)
+    tag_names = payload.pop("tags", None)
     for field, value in payload.items():
         setattr(row, field, value)
-    if tag_ids is not None:
-        row.tags = db.query(Tag).filter(Tag.id.in_(tag_ids)).all()
+    if tag_names is not None:
+        row.tags = _resolve_tags(db, tag_names)
+
     db.commit()
     db.refresh(row)
     return row
