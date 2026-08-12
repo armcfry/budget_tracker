@@ -1,23 +1,38 @@
-from sqlalchemy import Column, Integer, String, Numeric, Text, Date, DateTime, ForeignKey, func
-from sqlalchemy.orm import relationship
-from app.db.session import Base
-from app.models.transaction_tag import transaction_tags
+from datetime import date
+from decimal import Decimal
+from typing import List, Optional
+
+from app.models.tag import Tag
+from app.models.transaction_tag import TransactionTag
+from sqlmodel import Field, Relationship, SQLModel
 
 
-class Transaction(Base):
+class TransactionBase(SQLModel):
+    date_value: date
+    description: str
+    amount: Decimal
+    account_id: int = Field(foreign_key="accounts.id")
+
+
+class Transaction(TransactionBase, table=True):
     __tablename__ = "transactions"
 
-    id = Column(Integer, primary_key=True)
-    date = Column(Date, nullable=False)
-    title = Column(String(200), nullable=False)
-    amount = Column(Numeric(12, 2), nullable=False)
-    type = Column(String(10), nullable=False, default="debit")
-    account_id = Column(Integer, ForeignKey("accounts.id"), nullable=False)
-    category_id = Column(Integer, ForeignKey("categories.id"))
-    debt_id = Column(Integer, ForeignKey("debts.id"))
-    recurring_transaction_id = Column(Integer, ForeignKey("recurring_transactions.id"))
-    description = Column(Text)
-    created_at = Column(DateTime(timezone=True), server_default=func.now())
-    updated_at = Column(DateTime(timezone=True), server_default=func.now())
+    id: Optional[int] = Field(default=None, primary_key=True)
+    tags: List[Tag] = Relationship(link_model=TransactionTag)
 
-    tags = relationship("Tag", secondary=transaction_tags, back_populates="transactions")
+
+class TransactionCreate(TransactionBase):
+    tags: List[str] = []  # tag names; handled in the service layer, not a DB column
+
+
+class TransactionUpdate(SQLModel):
+    date_value: Optional[date] = None
+    description: Optional[str] = None
+    amount: Optional[Decimal] = None
+    account_id: Optional[int] = None
+    tags: Optional[List[str]] = None
+
+
+class TransactionRead(TransactionBase):
+    id: int
+    tags: List[Tag] = []

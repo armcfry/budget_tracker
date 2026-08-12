@@ -1,14 +1,27 @@
-from sqlalchemy import Column, Integer, String, DateTime, func
-from sqlalchemy.orm import relationship
-from app.db.session import Base
-from app.models.transaction_tag import transaction_tags
+from datetime import datetime
+from typing import Optional
+
+from sqlmodel import Field, SQLModel
 
 
-class Tag(Base):
+class TagBase(SQLModel):
+    name: str
+    color: Optional[str] = "#000000"
+
+
+class Tag(TagBase, table=True):
     __tablename__ = "tags"
 
-    id = Column(Integer, primary_key=True)
-    name = Column(String(100), nullable=False, unique=True)
-    created_at = Column(DateTime(timezone=True), server_default=func.now())
+    id: Optional[int] = Field(default=None, primary_key=True)
+    created_at: Optional[datetime] = Field(
+        default=None
+    )  # DB fills this via server default
 
-    transactions = relationship("Transaction", secondary=transaction_tags, back_populates="tags")
+
+class TagCreate(TagBase):
+    pass
+
+
+class TagUpdate(SQLModel):
+    name: Optional[str] = None
+    color: Optional[str] = None

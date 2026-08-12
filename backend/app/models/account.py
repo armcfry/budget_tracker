@@ -1,14 +1,33 @@
-from sqlalchemy import Column, Integer, String, Boolean, DateTime, func
-from app.db.session import Base
+from typing import Optional
+
+from sqlmodel import Field, SQLModel
 
 
-class Account(Base):
+class AccountBase(SQLModel):
+    name: str
+    type: str
+    balance: float = 0.0
+
+
+class Account(AccountBase, table=True):
     __tablename__ = "accounts"
 
-    id = Column(Integer, primary_key=True)
-    name = Column(String(100), nullable=False)
-    type = Column(String(50), nullable=False)
-    nickname = Column(String(100))
-    last_four = Column(String(4))
-    is_active = Column(Boolean, default=True)
-    created_at = Column(DateTime(timezone=True), server_default=func.now())
+    id: Optional[int] = Field(default=None, primary_key=True)
+    wallet_id: int = Field(foreign_key="wallets.id")
+
+
+class AccountCreate(AccountBase):
+    wallet_id: int
+
+
+class AccountUpdate(SQLModel):
+    name: Optional[str] = None
+    type: Optional[str] = None
+
+
+class AccountRead(SQLModel):
+    id: int
+    name: str
+    type: str
+    balance: float
+    wallet_id: int

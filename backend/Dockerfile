@@ -7,10 +7,9 @@ FROM python:3.12-slim
 # Set working directory inside the container
 WORKDIR /app
 
-# Install dependencies first (separate layer so Docker caches this
-# and only re-runs pip install when requirements.txt changes)
+# Install dependencies first
 COPY requirements.txt .
-RUN pip install --no-cache-dir -r requirements.txt
+RUN pip install -r requirements.txt
 
 # Copy the rest of the source code
 # (in dev this is overridden by the volume mount in docker-compose.yml,
