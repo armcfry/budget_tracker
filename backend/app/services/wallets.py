@@ -12,28 +12,28 @@ def get_wallet(db: Session, wallet_id: int) -> Wallet | None:
 
 
 def create_wallet(db: Session, data: WalletCreate) -> Wallet:
-    row = Wallet(**data.model_dump())
-    db.add(row)
+    wallet = Wallet(**data.model_dump())
+    db.add(wallet)
     db.commit()
-    db.refresh(row)
-    return row
+    db.refresh(wallet)
+    return wallet
 
 
 def update_wallet(db: Session, wallet_id: int, data: WalletUpdate) -> Wallet | None:
-    row = get_wallet(db, wallet_id)
-    if not row:
+    wallet = get_wallet(db, wallet_id)
+    if not wallet:
         return None
     for field, value in data.model_dump(exclude_unset=True).items():
-        setattr(row, field, value)
+        setattr(wallet, field, value)
     db.commit()
-    db.refresh(row)
-    return row
+    db.refresh(wallet)
+    return wallet
 
 
 def delete_wallet(db: Session, wallet_id: int) -> bool:
-    row = get_wallet(db, wallet_id)
-    if not row:
+    wallet = get_wallet(db, wallet_id)
+    if not wallet:
         return False
-    db.delete(row)
+    db.delete(wallet)
     db.commit()
     return True

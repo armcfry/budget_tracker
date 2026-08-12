@@ -15,32 +15,32 @@ def get_tag(db: Session, tag_id: int) -> Tag | None:
 
 
 def create_tag(db: Session, data: TagCreate) -> Tag:
-    row = Tag(**data.model_dump())
-    db.add(row)
+    tag = Tag(**data.model_dump())
+    db.add(tag)
     db.commit()
-    db.refresh(row)
-    return row
+    db.refresh(tag)
+    return tag
 
 
 def update_tag(db: Session, tag_id: int, data: TagUpdate) -> Tag | None:
-    row = get_tag(db, tag_id)
-    if not row:
+    tag = get_tag(db, tag_id)
+    if not tag:
         return None
 
     if data.color is not None and not re.match(COLOR_REGEX, data.color):
         raise ValueError("Invalid color format. Must be a valid hex color code.")
 
     for field, value in data.model_dump(exclude_unset=True).items():
-        setattr(row, field, value)
+        setattr(tag, field, value)
     db.commit()
-    db.refresh(row)
-    return row
+    db.refresh(tag)
+    return tag
 
 
 def delete_tag(db: Session, tag_id: int) -> bool:
-    row = get_tag(db, tag_id)
-    if not row:
+    tag = get_tag(db, tag_id)
+    if not tag:
         return False
-    db.delete(row)
+    db.delete(tag)
     db.commit()
     return True

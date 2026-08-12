@@ -1,3 +1,4 @@
+from app.models.account import Account
 from app.models.tag import Tag
 from app.models.transaction import Transaction, TransactionCreate, TransactionUpdate
 from sqlalchemy.orm import Session, joinedload
@@ -36,38 +37,40 @@ def get_transaction(db: Session, transaction_id: int) -> Transaction | None:
 
 def create_transaction(db: Session, data: TransactionCreate) -> Transaction:
     tag_names = data.tags
-    row = Transaction(**data.model_dump(exclude={"tags"}))
+    transaction = Transaction(**data.model_dump(exclude={"tags"}))
     if tag_names:
-        row.tags = _resolve_tags(db, tag_names)
+        transaction.tags = _resolve_tags(db, tag_names)
 
-    db.add(row)
+    db.add(transaction)
     db.commit()
-    db.refresh(row)
-    return row
+    db.refresh(transaction)
+    return transaction
 
 
 def update_transaction(
     db: Session, transaction_id: int, data: TransactionUpdate
 ) -> Transaction | None:
-    row = get_transaction(db, transaction_id)
-    if not row:
+    transaction = get_transaction(db, transaction_id)
+    if not transaction:
         return None
     payload = data.model_dump(exclude_unset=True)
     tag_names = payload.pop("tags", None)
+
     for field, value in payload.items():
-        setattr(row, field, value)
+        setattr(transaction, field, value)
+
     if tag_names is not None:
-        row.tags = _resolve_tags(db, tag_names)
+        transaction.tags = _resolve_tags(db, tag_names)
 
     db.commit()
-    db.refresh(row)
-    return row
+    db.refresh(transaction)
+    return transaction
 
 
 def delete_transaction(db: Session, transaction_id: int) -> bool:
-    row = get_transaction(db, transaction_id)
-    if not row:
+    transaction = get_transaction(db, transaction_id)
+    if not transaction:
         return False
-    db.delete(row)
+    db.delete(transaction)
     db.commit()
     return True
