@@ -1,3 +1,7 @@
+from datetime import date
+
+from sqlalchemy import select
+
 from app.models.account import Account
 from app.models.tag import Tag
 from app.models.transaction import Transaction, TransactionCreate, TransactionUpdate
@@ -22,8 +26,35 @@ def _resolve_tags(db: Session, tags: list[str]) -> list[Tag]:
 
 def get_transactions(
     db: Session,
+    date: date = None,
+    tags: list[str] = None,
+    amount_min: float = None,
+    amount_max: float = None,
 ) -> list[Transaction]:
-    return db.query(Transaction).order_by(Transaction.date_value).all()
+
+    stmt = select(Transaction)
+    conditions = []
+
+    print("here")
+    if date is not None:
+        conditions.append(Transaction.date_value == date)
+        print(date)
+
+    if tags:
+        conditions.append(Transaction.tags.any(Tag.name.in_(tags)))
+
+    if amount_min is not None:
+        conditions.append(Transaction.amount >= amount_min)
+
+    if amount_max is not None:
+        conditions.append(Transaction.amount <= amount_max)
+
+    if conditions:
+        stmt = stmt.where(*conditions)
+
+    stmt = stmt.order_by(Transaction.date_value)
+
+    return db.execute(stmt).scalars().all()
 
 
 def get_transaction(db: Session, transaction_id: int) -> Transaction | None:

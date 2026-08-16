@@ -1,3 +1,4 @@
+from datetime import date
 from typing import Annotated
 
 import app.services.transactions as svc
@@ -7,7 +8,7 @@ from app.models.transaction import (
     TransactionRead,
     TransactionUpdate,
 )
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy.orm import Session
 
 router = APIRouter(prefix="/transactions", tags=["transactions"])
@@ -16,9 +17,19 @@ TRANSACTION_NOT_FOUND = "Transaction not found"
 
 @router.get("", response_model=list[TransactionRead])
 def list_transactions(
-    db: Annotated[Session, Depends(get_db)] = None,
+    db: Annotated[Session, Depends(get_db)],
+    date: date = None,
+    tags: list[str] = Query(default=None),
+    amount_min: float = None,
+    amount_max: float = None,
 ):
-    return svc.get_transactions(db)
+    return svc.get_transactions(
+        db,
+        date=date,
+        tags=tags,
+        amount_min=amount_min,
+        amount_max=amount_max,
+    )
 
 
 @router.get(
