@@ -26,7 +26,10 @@ def _resolve_tags(db: Session, tags: list[str]) -> list[Tag]:
 
 def get_transactions(
     db: Session,
+    account_id: int = None,
     date: date = None,
+    date_min: date = None,
+    date_max: date = None,
     tags: list[str] = None,
     amount_min: float = None,
     amount_max: float = None,
@@ -35,10 +38,17 @@ def get_transactions(
     stmt = select(Transaction)
     conditions = []
 
-    print("here")
+    if account_id is not None:
+        conditions.append(Transaction.account_id == account_id)
+
     if date is not None:
         conditions.append(Transaction.date_value == date)
-        print(date)
+
+    if date_min is not None:
+        conditions.append(Transaction.date_value >= date_min)
+
+    if date_max is not None:
+        conditions.append(Transaction.date_value <= date_max)
 
     if tags:
         conditions.append(Transaction.tags.any(Tag.name.in_(tags)))

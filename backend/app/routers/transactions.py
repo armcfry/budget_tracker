@@ -18,14 +18,20 @@ TRANSACTION_NOT_FOUND = "Transaction not found"
 @router.get("", response_model=list[TransactionRead])
 def list_transactions(
     db: Annotated[Session, Depends(get_db)],
+    account_id: int = None,
     date: date = None,
+    date_min: date = None,
+    date_max: date = None,
     tags: list[str] = Query(default=None),
     amount_min: float = None,
     amount_max: float = None,
 ):
     return svc.get_transactions(
         db,
+        account_id=account_id,
         date=date,
+        date_min=date_min,
+        date_max=date_max,
         tags=tags,
         amount_min=amount_min,
         amount_max=amount_max,
