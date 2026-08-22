@@ -1,84 +1,47 @@
 import AccountSummary from "@/components/AccountSummary";
-import Link from "next/link";
-import { getAccounts, getTransactions, formatCurrency } from "@/lib/api";
+import TransactionsList from "@/components/TransactionsList";
+import LinkButton from "@/components/LinkButton";
+import { getAccounts, getTransactions, sortByDateDesc } from "@/lib/api";
+import { getCurrentMonthRange, getCurrentMonthLabel } from "@/lib/dates";
 
 export default async function Home() {
+  const { start, end } = getCurrentMonthRange();
+  const monthLabel = getCurrentMonthLabel();
+
   const [accounts, transactions] = await Promise.all([
     getAccounts(),
-    getTransactions(),
+    getTransactions({ dateMin: start, dateMax: end }),
   ]);
+  const monthlyTransactions = sortByDateDesc(transactions);
+  const accountNameById = Object.fromEntries(accounts.map((account) => [account.id, account.name]));
 
   return (
-    <div className="flex flex-col flex-1 bg-zinc-50 font-sans dark:bg-black">
+    <div className="flex flex-col flex-1 bg-retro-bg font-sans text-retro-text">
       <main className="flex flex-1 w-full max-w-6xl mx-auto flex-col gap-10 py-16 px-6">
-        <h1 className="text-2xl font-semibold text-black dark:text-zinc-50">
-          Budget Tracker
-        </h1>
+        <h1 className="font-pixel text-lg text-retro-text">Budget Tracker</h1>
 
         <section>
-          <div className="flex items-center justify-between mb-3">
-            <h2 className="text-lg font-medium text-black dark:text-zinc-50">
-              Overview
-            </h2>
-            <Link
-              href="/accounts"
-              className="text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 rounded-md px-4 py-2"
-            >
-              View Accounts
-            </Link>
+          <div className="flex flex-wrap items-center justify-between gap-2 mb-3">
+            <h2 className="font-pixel text-sm text-retro-text">Overview</h2>
+            <LinkButton href="/accounts">View Accounts</LinkButton>
           </div>
           {accounts.length === 0 ? (
-            <p className="text-sm text-zinc-500 dark:text-zinc-400">
-              No accounts found.
-            </p>
+            <p className="text-sm text-retro-muted">No accounts found.</p>
           ) : (
             <AccountSummary accounts={accounts} />
           )}
         </section>
 
         <section>
-          <h2 className="text-lg font-medium text-black dark:text-zinc-50 mb-3">
-            Recent Transactions
-          </h2>
-          {transactions.length === 0 ? (
-            <p className="text-sm text-zinc-500 dark:text-zinc-400">
-              No transactions found.
-            </p>
-          ) : (
-            <div className="overflow-x-auto">
-              <table className="w-full text-sm border-collapse">
-                <thead>
-                  <tr className="text-left text-zinc-500 dark:text-zinc-400 border-b border-zinc-200 dark:border-zinc-800">
-                    <th className="py-2 font-normal">Date</th>
-                    <th className="py-2 font-normal">Description</th>
-                    <th className="py-2 font-normal">Tags</th>
-                    <th className="py-2 font-normal text-right">Amount</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {transactions.map((tx) => (
-                    <tr
-                      key={tx.id}
-                      className="border-b border-zinc-100 dark:border-zinc-900"
-                    >
-                      <td className="py-2 text-zinc-600 dark:text-zinc-400 whitespace-nowrap">
-                        {tx.date_value}
-                      </td>
-                      <td className="py-2 text-black dark:text-zinc-50">
-                        {tx.description}
-                      </td>
-                      <td className="py-2 text-zinc-600 dark:text-zinc-400">
-                        {tx.tags.map((t) => t.name).join(", ")}
-                      </td>
-                      <td className="py-2 text-right text-black dark:text-zinc-50">
-                        {formatCurrency(tx.amount)}
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          )}
+          <div className="flex items-baseline justify-between mb-3">
+            <h2 className="font-pixel text-sm text-retro-text">Transactions</h2>
+            <span className="text-sm text-retro-muted">{monthLabel}</span>
+          </div>
+          <TransactionsList
+            transactions={monthlyTransactions}
+            emptyMessage={`No transactions in ${monthLabel}.`}
+            accountNameById={accountNameById}
+          />
         </section>
       </main>
     </div>

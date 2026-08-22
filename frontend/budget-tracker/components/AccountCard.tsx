@@ -1,4 +1,8 @@
+"use client";
+
+import { PixelCard, PixelStatCard } from "@pxlkit/ui-kit";
 import type { Account } from "@/lib/types";
+import { formatCurrency } from "@/lib/api";
 
 type AccountCardProps = {
   account: Account;
@@ -6,23 +10,21 @@ type AccountCardProps = {
 
 export default function AccountCard({ account }: Readonly<AccountCardProps>) {
   return (
-    <div className="bg-white shadow-md rounded-lg p-4 sm:p-6 flex items-center space-x-3 sm:space-x-4 h-full min-h-[90px] sm:min-h-[200px]">
-      <div className="text-blue-500 text-xl sm:text-2xl">{/* icon */}</div>
-      <div>
-        <h3 className="text-base sm:text-xl font-semibold text-gray-900">
-          {account.name}
-        </h3>
-        <p className="text-sm sm:text-base text-gray-700">
-          {formatCurrency(account.balance)}
-        </p>
-      </div>
-    </div>
+    <PixelCard
+      href={`/accounts/${account.id}`}
+      title={account.name}
+      description={formatAccountType(account.type)}
+      interactive
+      className="h-full"
+    >
+      <PixelStatCard label="Balance" value={formatCurrency(account.balance)} bordered={false} />
+    </PixelCard>
   );
 }
 
-function formatCurrency(value: number) {
-  return new Intl.NumberFormat("en-US", {
-    style: "currency",
-    currency: "USD",
-  }).format(value);
+function formatAccountType(type: string) {
+  return type
+    .split("_")
+    .map((word) => word[0].toUpperCase() + word.slice(1))
+    .join(" ");
 }
