@@ -21,6 +21,14 @@ export type Transaction = {
   tags: Tag[];
 };
 
+export type TransactionInput = {
+  date_value: string;
+  description: string;
+  amount: number;
+  account_id: number;
+  tags: string[];
+};
+
 export type TransactionFilters = {
   accountId?: number;
   date?: string;

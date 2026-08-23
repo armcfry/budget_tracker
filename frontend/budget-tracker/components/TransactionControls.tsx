@@ -43,7 +43,7 @@ export default function TransactionControls({
         Clear Filters
       </Link>
       <div className="flex flex-wrap items-center gap-1 rounded-md border-2 border-retro-border p-1">
-        {/* On clear filters remove highlighting of buttons */}
+        {/* TODO: On clear filters remove highlighting of buttons */}
         {sortOptions.map((sortOption) => (
           <PixelButton
             key={sortOption.field}

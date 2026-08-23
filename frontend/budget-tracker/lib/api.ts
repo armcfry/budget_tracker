@@ -93,8 +93,6 @@ export function sortTransactions(
 }
 
 export function formatCurrency(value: number) {
-  console.log(value)
-  
   return new Intl.NumberFormat("en-US", {
     style: "currency",
     currency: "USD",

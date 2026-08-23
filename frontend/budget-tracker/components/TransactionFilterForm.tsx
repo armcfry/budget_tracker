@@ -37,7 +37,7 @@ export default function TransactionFilterForm({
             />
           </div>
 
-        {/* fix to where multiple tags can be entered and treated as seperate tag */}
+        {/* TODO: fix to where multiple tags can be entered and treated as seperate tag */}
           <PixelInput
             label="Tags"
             type="text"
