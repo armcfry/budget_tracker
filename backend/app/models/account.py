@@ -1,3 +1,4 @@
+from decimal import Decimal
 from typing import Optional
 
 from sqlmodel import Field, SQLModel
@@ -6,7 +7,7 @@ from sqlmodel import Field, SQLModel
 class AccountBase(SQLModel):
     name: str
     type: str
-    balance: float = 0.0
+    balance: Decimal = Decimal("0.00")
 
 
 class Account(AccountBase, table=True):
@@ -29,5 +30,5 @@ class AccountRead(SQLModel):
     id: int
     name: str
     type: str
-    balance: float
+    balance: Decimal
     wallet_id: int

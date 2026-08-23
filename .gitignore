@@ -14,7 +14,7 @@ dist/
 downloads/
 eggs/
 .eggs/
-lib/
+backend/lib/
 lib64/
 parts/
 sdist/
@@ -208,3 +208,6 @@ __marimo__/
 
 .DS_Store
 backend/.DS_Store
+postman/transactions_request_bodies.json
+.gitignore
+Jan-Jun_Transactions_2026.csv

@@ -4,6 +4,7 @@ from typing import List, Optional
 
 from app.models.tag import Tag
 from app.models.transaction_tag import TransactionTag
+from sqlalchemy import Index
 from sqlmodel import Field, Relationship, SQLModel
 
 
@@ -16,6 +17,10 @@ class TransactionBase(SQLModel):
 
 class Transaction(TransactionBase, table=True):
     __tablename__ = "transactions"
+    __table_args__ = (
+        Index("idx_transactions_date", "date_value"),
+        Index("idx_transactions_account", "account_id"),
+    )
 
     id: Optional[int] = Field(default=None, primary_key=True)
     tags: List[Tag] = Relationship(link_model=TransactionTag)

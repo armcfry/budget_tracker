@@ -1,3 +1,4 @@
+from datetime import date
 from typing import Annotated
 
 import app.services.transactions as svc
@@ -7,7 +8,7 @@ from app.models.transaction import (
     TransactionRead,
     TransactionUpdate,
 )
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy.orm import Session
 
 router = APIRouter(prefix="/transactions", tags=["transactions"])
@@ -16,9 +17,25 @@ TRANSACTION_NOT_FOUND = "Transaction not found"
 
 @router.get("", response_model=list[TransactionRead])
 def list_transactions(
-    db: Annotated[Session, Depends(get_db)] = None,
+    db: Annotated[Session, Depends(get_db)],
+    account_id: int = None,
+    date: date = None,
+    date_min: date = None,
+    date_max: date = None,
+    tags: list[str] = Query(default=None),
+    amount_min: float = None,
+    amount_max: float = None,
 ):
-    return svc.get_transactions(db)
+    return svc.get_transactions(
+        db,
+        account_id=account_id,
+        date=date,
+        date_min=date_min,
+        date_max=date_max,
+        tags=tags,
+        amount_min=amount_min,
+        amount_max=amount_max,
+    )
 
 
 @router.get(
@@ -40,6 +57,13 @@ def create_transaction(
     data: TransactionCreate, db: Annotated[Session, Depends(get_db)] = None
 ):
     return svc.create_transaction(db, data)
+
+
+@router.post("/multiple", response_model=list[TransactionRead], status_code=201)
+def create_multiple_transactions(
+    data: list[TransactionCreate], db: Annotated[Session, Depends(get_db)] = None
+):
+    return svc.create_multiple_transactions(db, data)
 
 
 @router.patch(

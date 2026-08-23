@@ -1,3 +1,7 @@
+from datetime import date
+
+from sqlalchemy import select
+
 from app.models.account import Account
 from app.models.tag import Tag
 from app.models.transaction import Transaction, TransactionCreate, TransactionUpdate
@@ -22,8 +26,45 @@ def _resolve_tags(db: Session, tags: list[str]) -> list[Tag]:
 
 def get_transactions(
     db: Session,
+    account_id: int = None,
+    date: date = None,
+    date_min: date = None,
+    date_max: date = None,
+    tags: list[str] = None,
+    amount_min: float = None,
+    amount_max: float = None,
 ) -> list[Transaction]:
-    return db.query(Transaction).order_by(Transaction.date_value).all()
+
+    stmt = select(Transaction)
+    conditions = []
+
+    if account_id is not None:
+        conditions.append(Transaction.account_id == account_id)
+
+    if date is not None:
+        conditions.append(Transaction.date_value == date)
+
+    if date_min is not None:
+        conditions.append(Transaction.date_value >= date_min)
+
+    if date_max is not None:
+        conditions.append(Transaction.date_value <= date_max)
+
+    if tags:
+        conditions.append(Transaction.tags.any(Tag.name.in_(tags)))
+
+    if amount_min is not None:
+        conditions.append(Transaction.amount >= amount_min)
+
+    if amount_max is not None:
+        conditions.append(Transaction.amount <= amount_max)
+
+    if conditions:
+        stmt = stmt.where(*conditions)
+
+    stmt = stmt.order_by(Transaction.date_value)
+
+    return db.execute(stmt).scalars().all()
 
 
 def get_transaction(db: Session, transaction_id: int) -> Transaction | None:
@@ -45,6 +86,21 @@ def create_transaction(db: Session, data: TransactionCreate) -> Transaction:
     db.commit()
     db.refresh(transaction)
     return transaction
+
+def create_multiple_transactions(db: Session, data: list[TransactionCreate]) -> list[Transaction]:
+    transactions = []
+    for transaction_data in data:
+        tag_names = transaction_data.tags
+        transaction = Transaction(**transaction_data.model_dump(exclude={"tags"}))
+        if tag_names:
+            transaction.tags = _resolve_tags(db, tag_names)
+        db.add(transaction)
+        transactions.append(transaction)
+
+    db.commit()
+    for transaction in transactions:
+        db.refresh(transaction)
+    return transactions
 
 
 def update_transaction(
