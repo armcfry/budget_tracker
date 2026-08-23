@@ -59,6 +59,13 @@ def create_transaction(
     return svc.create_transaction(db, data)
 
 
+@router.post("/multiple", response_model=list[TransactionRead], status_code=201)
+def create_multiple_transactions(
+    data: list[TransactionCreate], db: Annotated[Session, Depends(get_db)] = None
+):
+    return svc.create_multiple_transactions(db, data)
+
+
 @router.patch(
     "/{transaction_id}",
     response_model=TransactionRead,

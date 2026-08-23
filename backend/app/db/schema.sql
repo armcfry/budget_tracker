@@ -42,21 +42,21 @@ CREATE TABLE tags (
 
 -- Common seed categories
 INSERT INTO tags (name, color) VALUES
-    ('Rent',  '#E53935'),
+    ('Rent',             '#E53935'),
     ('Groceries',        '#43A047'),
     ('Gas',              '#FB8C00'),
-    ('Food',       '#F4511E'),
+    ('Food',             '#F4511E'),
     ('Subscriptions',    '#8E24AA'),
     ('Utilities',        '#00ACC1'),
     ('Insurance',        '#3949AB'),
-    ('Medical',       '#D81B60'),
+    ('Medical',          '#D81B60'),
     ('Entertainment',    '#FFB300'),
     ('Clothing',         '#6D4C41'),
     ('Travel',           '#00897B'),
     ('Debt Payment',     '#B71C1C'),
     ('Income',           '#1B5E20'),
     ('Savings',          '#0D47A1'),
-    ('Cats',    '#757575');
+    ('Cats',             '#757575');
 
 
 -- --------------------------------------------------------

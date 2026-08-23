@@ -87,6 +87,21 @@ def create_transaction(db: Session, data: TransactionCreate) -> Transaction:
     db.refresh(transaction)
     return transaction
 
+def create_multiple_transactions(db: Session, data: list[TransactionCreate]) -> list[Transaction]:
+    transactions = []
+    for transaction_data in data:
+        tag_names = transaction_data.tags
+        transaction = Transaction(**transaction_data.model_dump(exclude={"tags"}))
+        if tag_names:
+            transaction.tags = _resolve_tags(db, tag_names)
+        db.add(transaction)
+        transactions.append(transaction)
+
+    db.commit()
+    for transaction in transactions:
+        db.refresh(transaction)
+    return transactions
+
 
 def update_transaction(
     db: Session, transaction_id: int, data: TransactionUpdate

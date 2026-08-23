@@ -44,30 +44,33 @@ export default function TransactionControls({
       </Link>
       <div className="flex flex-wrap items-center gap-1 rounded-md border-2 border-retro-border p-1">
         {/* On clear filters remove highlighting of buttons */}
-        {sortOptions.map((opt) => (
+        {sortOptions.map((sortOption) => (
           <PixelButton
-            key={opt.field}
-            asChild
+            key={sortOption.field}
+            // asChild
             size="sm"
-            variant={opt.active ? "solid" : "ghost"}
-            tone={opt.active ? "cyan" : "neutral"}
+            variant={sortOption.active ? "solid" : "ghost"}
+            tone={sortOption.active ? "cyan" : "neutral"}
           >
-            <Link href={opt.href} className="whitespace-nowrap">
-              {opt.label}
-              {opt.active ? (sortDirection === "asc" ? " ↑" : " ↓") : ""}
+            <Link href={sortOption.href} className="whitespace-nowrap">
+              {sortOption.label}
+              {/* TODO: add use state to remove nested ternary */}
+              {sortOption.active ? (sortDirection === "asc" ? " ↑" : " ↓") : ""} 
             </Link>
           </PixelButton>
         ))}
 
 
-        <details className="relative" open={filtersActive}>
+        <details className="relative">
           <summary className="w-fit cursor-pointer list-none select-none">
-            {/* TODO: on click open close to change color, not filters active */}
-            <PixelButton asChild size="sm" variant={ filtersActive ? "solid" : "ghost"} tone={filtersActive ? "green" : "neutral"}>
+            <PixelButton 
+              asChild 
+              size="sm" 
+              variant={ filtersActive ? "solid" : "ghost"} 
+              tone={filtersActive ? "green" : "neutral"} >
               <span>Filters</span>
             </PixelButton>
           </summary>
-
           <TransactionFilterForm
             dateMinFilter={dateMinFilter}
             dateMaxFilter={dateMaxFilter}

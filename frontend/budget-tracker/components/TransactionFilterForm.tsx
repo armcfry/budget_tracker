@@ -16,12 +16,12 @@ export default function TransactionFilterForm({
   return (
     <form
           method="get"
-          className="absolute right-0 z-10 mt-2 flex w-[22rem] max-w-[calc(100vw-3rem)] flex-col gap-3 rounded-lg border-2 border-retro-border bg-retro-card p-4 shadow-lg"
+          className="absolute lg:left-auto lg:right-0 z-10 mt-2 flex w-[22rem] max-w-[calc(100vw-3rem)] flex-col gap-3 rounded-lg border-2 border-retro-border bg-retro-card p-4 shadow-lg"
         >
           <div className="flex flex-col gap-3 sm:flex-row">
             <PixelInput
               label="From"
-              type="date"  // change color of calendar icon to retro-text
+              type="date"  // TODO: change color of calendar icon to retro-text
               name="date_min"
               defaultValue={dateMinFilter}
               size="sm"
