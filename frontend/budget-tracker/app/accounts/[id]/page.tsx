@@ -4,9 +4,10 @@ import TransactionsList, { ActiveTagFilterPill } from "@/components/Transactions
 import TransactionControls from "@/components/TransactionControls";
 import LinkButton from "@/components/LinkButton";
 import StatCard from "@/components/StatCard";
-import { getAccount, getTransactions, sortTransactions, formatCurrency } from "@/lib/api";
+import { getAccount, getAccounts, getTransactions, sortTransactions, formatCurrency } from "@/lib/api";
 import { getCurrentMonthRange, getCurrentMonthLabel } from "@/lib/dates";
 import type { SortDirection, TransactionSortField } from "@/lib/types";
+import AddTransactionButton from "@/components/AddTransactionButton";
 
 type SearchParams = { [key: string]: string | string[] | undefined };
 
@@ -47,7 +48,7 @@ export default async function AccountDetailPage({
   const { id } = await params;
   const sp = await searchParams;
 
-  const account = await getAccount(id);
+  const [account, accounts] = await Promise.all([getAccount(id), getAccounts()]);
   if (!account) {
     notFound();
   }
@@ -70,10 +71,10 @@ export default async function AccountDetailPage({
   const amountMaxFilter = firstValue(sp.amount_max) ?? "";
 
   const rawSortField = firstValue(sp.sort);
-  const sortField: TransactionSortField = 
-    SORT_FIELDS.some((s) => s.field === rawSortField) 
-    ? (rawSortField as TransactionSortField) 
-    : "date";
+  const sortField: TransactionSortField =
+    SORT_FIELDS.some((s) => s.field === rawSortField)
+      ? (rawSortField as TransactionSortField)
+      : "date";
   const sortDirection: SortDirection = firstValue(sp.dir) === "asc" ? "asc" : "desc";
 
   const transactions = await getTransactions({
@@ -210,7 +211,7 @@ export default async function AccountDetailPage({
               ))}
             </div>
           )}
-
+          <AddTransactionButton accounts={accounts} />
           <TransactionsList
             transactions={sortedTransactions}
             emptyMessage={
@@ -219,6 +220,8 @@ export default async function AccountDetailPage({
                 : `No transactions to display for this time period.`
             }
             tagFilterHrefByName={tagFilterHrefByName}
+            editable
+            accounts={accounts}
           />
         </section>
       </main>

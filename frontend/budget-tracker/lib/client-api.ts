@@ -33,3 +33,10 @@ export async function updateTransaction(
   const updated = await res.json();
   return { ...updated, amount: Number(updated.amount) };
 }
+
+export async function deleteTransaction(id: number): Promise<void> {
+  const res = await fetch(`${API_URL}/transactions/${id}`, { method: "DELETE" });
+  if (!res.ok) {
+    throw new Error("Failed to delete transaction");
+  }
+}

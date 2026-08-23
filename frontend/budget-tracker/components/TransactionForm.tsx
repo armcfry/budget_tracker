@@ -1,8 +1,10 @@
 "use client";
 
 import type { SubmitEvent } from "react";
-import { PixelButton, PixelInput, PixelSelect } from "@pxlkit/ui-kit";
+import { PixelButton, PixelCheckbox, PixelInput } from "@pxlkit/ui-kit";
+import AccountSelect from "./AccountSelect";
 import type { Account, Transaction, TransactionInput } from "@/lib/types";
+import { getTodayISODate } from "@/lib/dates";
 
 type TransactionFormProps = {
   initialData?: Partial<Transaction>;
@@ -27,28 +29,36 @@ export default function TransactionForm({
       .map((tag) => tag.trim())
       .filter(Boolean);
 
+    const magnitude = Math.abs(Number(formData.get("amount")));
+    const isIncome = formData.get("is_income") === "on";
+
     onSubmit({
       date_value: getString("date_value"),
       description: getString("description"),
-      amount: Number(formData.get("amount")),
+      amount: isIncome ? magnitude : -magnitude,
       account_id: Number(formData.get("account_id")),
       tags,
     });
   }
 
   return (
-    <form
-      onSubmit={handleSubmit}
-      className="absolute lg:left-auto lg:right-0 z-10 mt-2 flex w-[22rem] max-w-[calc(100vw-3rem)] flex-col gap-3 rounded-lg border-2 border-retro-border bg-retro-card p-4 shadow-lg"
-    >
+    <form onSubmit={handleSubmit} className="flex flex-col gap-3">
       <PixelInput
         label="Amount"
         type="number"
         step="0.01"
+        min="0"
         name="amount"
-        defaultValue={initialData.amount ?? ""}
+        defaultValue={initialData.amount != null ? Math.abs(initialData.amount) : ""}
         size="sm"
         required
+      />
+
+      <PixelCheckbox
+        label="Income"
+        name="is_income"
+        defaultChecked={initialData.amount != null ? initialData.amount > 0 : false}
+        tone="green"
       />
 
       <PixelInput
@@ -64,21 +74,17 @@ export default function TransactionForm({
         label="Date"
         type="date"
         name="date_value"
-        defaultValue={initialData.date_value ?? ""}
+        defaultValue={initialData.date_value ?? getTodayISODate()}
         size="sm"
         required
       />
 
-      <PixelSelect
-        label="Account"
+      <AccountSelect
+        accounts={accounts}
         name="account_id"
-        options={accounts.map((account) => ({
-          value: String(account.id),
-          label: account.name,
-        }))}
-        defaultValue={initialData.account_id != null ? String(initialData.account_id) : undefined}
-        size="sm"
+        defaultValue={initialData.account_id != null ? String(initialData.account_id) : ""}
         required
+        size="sm"
       />
 
       <PixelInput

@@ -1,6 +1,7 @@
 import AccountSummary from "@/components/AccountSummary";
 import TransactionsList from "@/components/TransactionsList";
 import LinkButton from "@/components/LinkButton";
+import AddTransactionButton from "@/components/AddTransactionButton";
 import { getAccounts, getTransactions, sortByDateDesc } from "@/lib/api";
 import { getCurrentMonthRange, getCurrentMonthLabel } from "@/lib/dates";
 
@@ -33,10 +34,15 @@ export default async function Home() {
         </section>
 
         <section>
-          <div className="flex items-baseline justify-between mb-3">
+          <div className="flex flex-col gap-2 sm:flex-row sm:items-baseline sm:justify-between mb-3">
             <h2 className="font-pixel text-sm text-retro-text">Transactions</h2>
-            <span className="text-sm text-retro-muted">{monthLabel}</span>
+            <div className="flex items-center gap-3">
+              <span className="text-sm text-retro-muted">{monthLabel}</span>
+            </div>
           </div>
+          <section className="flex flex-col gap-4">
+            <AddTransactionButton accounts={accounts} />
+          </section>
           <TransactionsList
             transactions={monthlyTransactions}
             emptyMessage={`No transactions in ${monthLabel}.`}

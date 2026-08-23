@@ -5,6 +5,10 @@ function toISODate(d: Date): string {
   return `${year}-${month}-${day}`;
 }
 
+export function getTodayISODate(): string {
+  return toISODate(new Date());
+}
+
 export function getCurrentMonthRange(): { start: string; end: string } {
   const now = new Date();
   const start = new Date(now.getFullYear(), now.getMonth(), 1);
