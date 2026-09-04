@@ -141,6 +141,10 @@ export default async function AccountDetailPage({
     return `/accounts/${accountId}?${params.toString()}`;
   }
 
+  function getAccountBalance(): number {
+    return sortedTransactions.reduce((sum, transaction) => sum + Number(transaction.amount), 0);
+  }
+
   const sortOptions = SORT_FIELDS.map(({ field, label }) => ({
     field,
     label,
@@ -159,7 +163,7 @@ export default async function AccountDetailPage({
             >
               &larr; Back to Accounts
             </Link>
-            <LinkButton href="/">Home</LinkButton>
+            <LinkButton href="/" tone="purple">Home</LinkButton>
           </div>
 
           <div>
@@ -170,7 +174,7 @@ export default async function AccountDetailPage({
           <div className="w-fit min-w-[220px]">
             <StatCard
               label="Current Balance"
-              value={formatCurrency(account.balance)}
+              value={formatCurrency(getAccountBalance())}
               tone={account.balance < 0 ? "red" : "green"}
             />
           </div>

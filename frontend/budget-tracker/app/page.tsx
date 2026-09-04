@@ -24,7 +24,7 @@ export default async function Home() {
         <section>
           <div className="flex flex-wrap items-center justify-between gap-2 mb-3">
             <h2 className="font-pixel text-sm text-retro-text">Overview</h2>
-            <LinkButton href="/accounts">View Accounts</LinkButton>
+            <LinkButton href="/accounts" tone="purple">View Accounts</LinkButton>
           </div>
           {accounts.length === 0 ? (
             <p className="text-sm text-retro-muted">No accounts found.</p>

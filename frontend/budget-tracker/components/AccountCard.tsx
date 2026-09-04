@@ -6,9 +6,10 @@ import { formatCurrency } from "@/lib/api";
 
 type AccountCardProps = {
   account: Account;
+  balance: number;
 };
 
-export default function AccountCard({ account }: Readonly<AccountCardProps>) {
+export default function AccountCard({ account, balance }: Readonly<AccountCardProps>) {
   return (
     <PixelCard
       href={`/accounts/${account.id}`}
@@ -17,7 +18,7 @@ export default function AccountCard({ account }: Readonly<AccountCardProps>) {
       interactive
       className="h-full"
     >
-      <PixelStatCard label="Balance" value={formatCurrency(account.balance)} bordered={false} />
+      <PixelStatCard label="Balance" value={formatCurrency(balance)} bordered={false} />
     </PixelCard>
   );
 }

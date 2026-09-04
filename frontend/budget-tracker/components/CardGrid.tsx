@@ -1,7 +1,7 @@
 type CardGridProps<T> = {
     items: T[];
     keyExtractor: (item: T) => string | number;
-    renderItem: (item: T) => React.ReactNode;
+    renderItem: (item: T, index: number) => React.ReactNode;
     columns?: string;
     emptyMessage?: string;
 };
@@ -23,9 +23,9 @@ export default function CardGrid<T>({
 
     return (
         <div className={`grid ${columns} gap-3 sm:gap-4`}>
-            {items.map((item) => (
+            {items.map((item, index) => (
                 <div key={keyExtractor(item)} className="h-full">
-                    {renderItem(item)}
+                    {renderItem(item, index)}
                 </div>
             ))}
         </div>
