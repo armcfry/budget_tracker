@@ -2,16 +2,17 @@ import AccountSummary from "@/components/AccountSummary";
 import TransactionsList from "@/components/TransactionsList";
 import LinkButton from "@/components/LinkButton";
 import AddTransactionButton from "@/components/AddTransactionButton";
-import { getAccounts, getTransactions, sortByDateDesc } from "@/lib/api";
+import { getAccounts, getTags, getTransactions, sortByDateDesc } from "@/lib/api";
 import { getCurrentMonthRange, getCurrentMonthLabel } from "@/lib/dates";
 
 export default async function Home() {
   const { start, end } = getCurrentMonthRange();
   const monthLabel = getCurrentMonthLabel();
 
-  const [accounts, transactions] = await Promise.all([
+  const [accounts, transactions, tags] = await Promise.all([
     getAccounts(),
     getTransactions({ dateMin: start, dateMax: end }),
+    getTags(),
   ]);
   const monthlyTransactions = sortByDateDesc(transactions);
   const accountNameById = Object.fromEntries(accounts.map((account) => [account.id, account.name]));
@@ -24,7 +25,9 @@ export default async function Home() {
         <section>
           <div className="flex flex-wrap items-center justify-between gap-2 mb-3">
             <h2 className="font-pixel text-sm text-retro-text">Overview</h2>
-            <LinkButton href="/accounts" tone="purple">View Accounts</LinkButton>
+            <div className="flex items-center gap-2">
+              <LinkButton href="/accounts" tone="purple">View Accounts</LinkButton>
+            </div>
           </div>
           {accounts.length === 0 ? (
             <p className="text-sm text-retro-muted">No accounts found.</p>
@@ -41,12 +44,13 @@ export default async function Home() {
             </div>
           </div>
           <section className="flex flex-col gap-4">
-            <AddTransactionButton accounts={accounts} />
+            <AddTransactionButton accounts={accounts} tags={tags} />
           </section>
           <TransactionsList
             transactions={monthlyTransactions}
             emptyMessage={`No transactions in ${monthLabel}.`}
             accountNameById={accountNameById}
+            tags={tags}
           />
         </section>
       </main>

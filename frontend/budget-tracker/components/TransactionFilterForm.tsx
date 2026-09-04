@@ -1,4 +1,8 @@
+"use client";
+
 import { PixelButton, PixelInput } from "@pxlkit/ui-kit";
+import TagInput from "./TagInput";
+import type { Tag } from "@/lib/types";
 
 export default function TransactionFilterForm({
   dateMinFilter,
@@ -6,12 +10,14 @@ export default function TransactionFilterForm({
   tagsFilter,
   amountMinFilter,
   amountMaxFilter,
+  tags,
 }: Readonly<{
   dateMinFilter: string;
   dateMaxFilter: string;
   tagsFilter: string;
   amountMinFilter: string;
   amountMaxFilter: string;
+  tags: Tag[];
 }>) {
   return (
     <form
@@ -37,14 +43,10 @@ export default function TransactionFilterForm({
             />
           </div>
 
-        {/* TODO: fix to where multiple tags can be entered and treated as seperate tag */}
-          <PixelInput
-            label="Tags"
-            type="text"
+          <TagInput
             name="tags"
-            placeholder="e.g. groceries, rent"
-            defaultValue={tagsFilter}
-            size="sm"
+            tags={tags}
+            defaultValue={tagsFilter ? tagsFilter.split(",").map((t) => t.trim()).filter(Boolean) : []}
           />
 
           <div className="flex flex-col gap-3 sm:flex-row">

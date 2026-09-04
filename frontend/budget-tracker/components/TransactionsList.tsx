@@ -22,6 +22,8 @@ type TransactionsListProps = {
   editable?: boolean;
   /** Required when `editable` is true — populates the edit form's account picker. */
   accounts?: Account[];
+  /** Required when `editable` is true — populates the edit form's tag picker. */
+  tags?: Tag[];
 };
 
 function EditIcon() {
@@ -71,6 +73,7 @@ export default function TransactionsList({
   accountNameById,
   editable = false,
   accounts = [],
+  tags = [],
 }: Readonly<TransactionsListProps>) {
   const router = useRouter();
   const [editingTx, setEditingTx] = useState<Transaction | null>(null);
@@ -193,7 +196,12 @@ export default function TransactionsList({
             }}
           >
             {editingTx && (
-              <TransactionForm accounts={accounts} initialData={editingTx} onSubmit={handleEditSubmit} />
+              <TransactionForm
+                accounts={accounts}
+                tags={tags}
+                initialData={editingTx}
+                onSubmit={handleEditSubmit}
+              />
             )}
           </PixelModal>
 

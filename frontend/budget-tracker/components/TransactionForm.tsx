@@ -3,22 +3,27 @@
 import type { SubmitEvent } from "react";
 import { PixelButton, PixelCheckbox, PixelInput } from "@pxlkit/ui-kit";
 import AccountSelect from "./AccountSelect";
-import type { Account, Transaction, TransactionInput } from "@/lib/types";
+import TagInput from "./TagInput";
+import type { Account, Tag, Transaction, TransactionInput } from "@/lib/types";
 import { getTodayISODate } from "@/lib/dates";
 
 type TransactionFormProps = {
   initialData?: Partial<Transaction>;
   accounts: Account[];
+  tags: Tag[];
+  accountId?: number;
   onSubmit: (data: TransactionInput) => void | Promise<void>;
 };
 
 export default function TransactionForm({
   initialData = {},
   accounts,
+  tags,
+  accountId,
   onSubmit,
 }: Readonly<TransactionFormProps>) {
   const isEditing = initialData.id != null;
-  const defaultTags = initialData.tags?.map((tag) => tag.name).join(", ") ?? "";
+  const defaultTags = initialData.tags?.map((tag) => tag.name) ?? [];
 
   function handleSubmit(event: SubmitEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -31,7 +36,7 @@ export default function TransactionForm({
 
     const magnitude = Math.abs(Number(formData.get("amount")));
     const isIncome = formData.get("is_income") === "on";
-
+    
     onSubmit({
       date_value: getString("date_value"),
       description: getString("description"),
@@ -39,6 +44,14 @@ export default function TransactionForm({
       account_id: Number(formData.get("account_id")),
       tags,
     });
+  }
+
+  function getAccountId() {
+    let id = initialData.account_id != null ? String(initialData.account_id) : "";
+    if(id == "" && accountId != null) {
+      id = String(accountId);
+    }
+    return id;
   }
 
   return (
@@ -82,19 +95,12 @@ export default function TransactionForm({
       <AccountSelect
         accounts={accounts}
         name="account_id"
-        defaultValue={initialData.account_id != null ? String(initialData.account_id) : ""}
+        defaultValue={getAccountId()}
         required
         size="sm"
       />
 
-      <PixelInput
-        label="Tags"
-        type="text"
-        name="tags"
-        placeholder="e.g. groceries, rent"
-        defaultValue={defaultTags}
-        size="sm"
-      />
+      <TagInput name="tags" tags={tags} defaultValue={defaultTags} />
 
       <div className="flex flex-wrap items-center justify-between gap-2 pt-1">
         <PixelButton type="submit" size="sm" tone="cyan">

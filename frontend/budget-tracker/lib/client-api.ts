@@ -1,4 +1,4 @@
-import type { Transaction, TransactionInput } from "@/lib/types";
+import type { Tag, Transaction, TransactionInput } from "@/lib/types";
 
 // Called from client components, which run in the browser and need the
 // externally-reachable API URL (INTERNAL_API_URL in lib/api.ts only
@@ -38,5 +38,39 @@ export async function deleteTransaction(id: number): Promise<void> {
   const res = await fetch(`${API_URL}/transactions/${id}`, { method: "DELETE" });
   if (!res.ok) {
     throw new Error("Failed to delete transaction");
+  }
+}
+
+export async function createTag(data: { name: string; color?: string }): Promise<Tag> {
+  const res = await fetch(`${API_URL}/tags`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(data),
+  });
+  if (!res.ok) {
+    throw new Error("Failed to create tag");
+  }
+  return res.json();
+}
+
+export async function updateTag(
+  id: number,
+  data: Partial<{ name: string; color: string }>
+): Promise<Tag> {
+  const res = await fetch(`${API_URL}/tags/${id}`, {
+    method: "PATCH",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(data),
+  });
+  if (!res.ok) {
+    throw new Error("Failed to update tag");
+  }
+  return res.json();
+}
+
+export async function deleteTag(id: number): Promise<void> {
+  const res = await fetch(`${API_URL}/tags/${id}`, { method: "DELETE" });
+  if (!res.ok) {
+    throw new Error("Failed to delete tag");
   }
 }

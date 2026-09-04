@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { PixelButton } from "@pxlkit/ui-kit";
 import TransactionFilterForm from "./TransactionFilterForm";
+import type { Tag } from "@/lib/types";
 
 type SortOption = {
   field: string;
@@ -21,6 +22,7 @@ type TransactionControlsProps = {
   amountMaxFilter: string;
   accountId: number;
   filtersActive: boolean;
+  tags: Tag[];
 };
 
 export default function TransactionControls({
@@ -33,6 +35,7 @@ export default function TransactionControls({
   amountMaxFilter,
   accountId,
   filtersActive,
+  tags,
 }: Readonly<TransactionControlsProps>) {
   return (
     <div className="flex flex-wrap items-center gap-2">
@@ -76,7 +79,8 @@ export default function TransactionControls({
             dateMaxFilter={dateMaxFilter}
             tagsFilter={tagsFilter}
             amountMinFilter={amountMinFilter}
-            amountMaxFilter={amountMaxFilter} />
+            amountMaxFilter={amountMaxFilter}
+            tags={tags} />
         </details>
       </div>
     </div>

@@ -5,11 +5,13 @@ import { useRouter } from "next/navigation";
 import { PixelButton, PixelModal } from "@pxlkit/ui-kit";
 import TransactionForm from "./TransactionForm";
 import { createTransaction } from "@/lib/client-api";
-import type { Account, TransactionInput } from "@/lib/types";
+import type { Account, Tag, TransactionInput } from "@/lib/types";
 
 export default function AddTransactionButton({
   accounts,
-}: Readonly<{ accounts: Account[] }>) {
+  tags,
+  accountId,
+}: Readonly<{ accounts: Account[]; tags: Tag[]; accountId?: number }>) {
   const [open, setOpen] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const router = useRouter();
@@ -36,7 +38,7 @@ export default function AddTransactionButton({
         + Add Transaction
       </PixelButton>
       <PixelModal open={open} title="Add Transaction" onClose={handleClose}>
-        {open && <TransactionForm accounts={accounts} onSubmit={handleSubmit} />}
+        {open && <TransactionForm accounts={accounts} tags={tags} accountId={accountId} onSubmit={handleSubmit} />}
         {error && <p className="mt-2 text-sm text-retro-red">{error}</p>}
       </PixelModal>
     </>

@@ -1,6 +1,7 @@
 import type {
   Account,
   SortDirection,
+  Tag,
   Transaction,
   TransactionFilters,
   TransactionSortField,
@@ -29,6 +30,16 @@ export async function getAccount(id: number | string): Promise<Account | null> {
     return { ...data, balance: Number(data.balance) };
   } catch {
     return null;
+  }
+}
+
+export async function getTags(): Promise<Tag[]> {
+  try {
+    const res = await fetch(`${API_URL}/tags`, { cache: "no-store" });
+    if (!res.ok) return [];
+    return res.json();
+  } catch {
+    return [];
   }
 }
 

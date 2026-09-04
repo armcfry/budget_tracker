@@ -4,7 +4,7 @@ import TransactionsList, { ActiveTagFilterPill } from "@/components/Transactions
 import TransactionControls from "@/components/TransactionControls";
 import LinkButton from "@/components/LinkButton";
 import StatCard from "@/components/StatCard";
-import { getAccount, getAccounts, getTransactions, sortTransactions, formatCurrency } from "@/lib/api";
+import { getAccount, getAccounts, getTags, getTransactions, sortTransactions, formatCurrency } from "@/lib/api";
 import { getCurrentMonthRange, getCurrentMonthLabel } from "@/lib/dates";
 import type { SortDirection, TransactionSortField } from "@/lib/types";
 import AddTransactionButton from "@/components/AddTransactionButton";
@@ -48,7 +48,7 @@ export default async function AccountDetailPage({
   const { id } = await params;
   const sp = await searchParams;
 
-  const [account, accounts] = await Promise.all([getAccount(id), getAccounts()]);
+  const [account, accounts, tags] = await Promise.all([getAccount(id), getAccounts(), getTags()]);
   if (!account) {
     notFound();
   }
@@ -199,6 +199,7 @@ export default async function AccountDetailPage({
               amountMaxFilter={amountMaxFilter}
               accountId={accountId}
               filtersActive={hasExplicitPanelFilters}
+              tags={tags}
             />
           </div>
 
@@ -215,7 +216,7 @@ export default async function AccountDetailPage({
               ))}
             </div>
           )}
-          <AddTransactionButton accounts={accounts} />
+          <AddTransactionButton accounts={accounts} tags={tags} accountId={account.id}/>
           <TransactionsList
             transactions={sortedTransactions}
             emptyMessage={
@@ -226,6 +227,7 @@ export default async function AccountDetailPage({
             tagFilterHrefByName={tagFilterHrefByName}
             editable
             accounts={accounts}
+            tags={tags}
           />
         </section>
       </main>
