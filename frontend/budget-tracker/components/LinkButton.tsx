@@ -4,6 +4,8 @@ import Link from "next/link";
 import { PixelButton } from "@pxlkit/ui-kit";
 import type { Tone, Variant, Size } from "@pxlkit/ui-kit";
 
+// TODO: figure out what this class is for
+
 type LinkButtonProps = {
   href: string;
   children: React.ReactNode;

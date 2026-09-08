@@ -39,6 +39,7 @@ export default function TransactionControls({
 }: Readonly<TransactionControlsProps>) {
   return (
     <div className="flex flex-wrap items-center gap-2">
+      {/* TODO: make this look less bad */}
       <Link
         href={`/accounts/${accountId}`}
         className="text-sm text-retro-muted underline hover:text-retro-text"

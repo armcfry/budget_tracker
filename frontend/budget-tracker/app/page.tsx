@@ -4,6 +4,7 @@ import LinkButton from "@/components/LinkButton";
 import AddTransactionButton from "@/components/AddTransactionButton";
 import { getAccounts, getTags, getTransactions, sortByDateDesc } from "@/lib/api";
 import { getCurrentMonthRange, getCurrentMonthLabel } from "@/lib/dates";
+import MonthlyInfo from "@/components/MonthlyInfo";
 
 export default async function Home() {
   const { start, end } = getCurrentMonthRange();
@@ -21,7 +22,6 @@ export default async function Home() {
     <div className="flex flex-col flex-1 bg-retro-bg font-sans text-retro-text">
       <main className="flex flex-1 w-full max-w-6xl mx-auto flex-col gap-10 py-16 px-6">
         <h1 className="font-pixel text-lg text-retro-text">Budget Tracker</h1>
-
         <section>
           <div className="flex flex-wrap items-center justify-between gap-2 mb-3">
             <h2 className="font-pixel text-sm text-retro-text">Overview</h2>
@@ -29,6 +29,11 @@ export default async function Home() {
               <LinkButton href="/accounts" tone="purple">View Accounts</LinkButton>
             </div>
           </div>
+          <section>
+            <div className="flex items-center gap-2">
+              <MonthlyInfo />
+            </div>
+          </section>
           {accounts.length === 0 ? (
             <p className="text-sm text-retro-muted">No accounts found.</p>
           ) : (
