@@ -10,9 +10,10 @@ export default async function Home() {
   const { start, end } = getCurrentMonthRange();
   const monthLabel = getCurrentMonthLabel();
 
-  const [accounts, transactions, tags] = await Promise.all([
+  const [accounts, transactions, recurring_transactions, tags] = await Promise.all([
     getAccounts(),
-    getTransactions({ dateMin: start, dateMax: end }),
+    getTransactions({ dateMin: start, dateMax: end, recurring: false}),
+    getTransactions({ dateMin: start, dateMax: end, recurring: true }),
     getTags(),
   ]);
   const monthlyTransactions = sortByDateDesc(transactions);
@@ -22,18 +23,25 @@ export default async function Home() {
     <div className="flex flex-col flex-1 bg-retro-bg font-sans text-retro-text">
       <main className="flex flex-1 w-full max-w-6xl mx-auto flex-col gap-10 py-16 px-6">
         <h1 className="font-pixel text-lg text-retro-text">Budget Tracker</h1>
-        <section>
-          <div className="flex flex-wrap items-center justify-between gap-2 mb-3">
-            <h2 className="font-pixel text-sm text-retro-text">Overview</h2>
-            <div className="flex items-center gap-2">
-              <LinkButton href="/accounts" tone="purple">View Accounts</LinkButton>
-            </div>
+        <div className="flex flex-wrap items-center justify-between gap-2 mb-3">
+          <h2 className="font-pixel text-sm text-retro-text">Overview</h2>
+          <div className="flex items-center gap-2">
+            <LinkButton href="/accounts" tone="purple">View Accounts</LinkButton>
           </div>
-          <section>
-            <div className="flex items-center gap-2">
-              <MonthlyInfo />
-            </div>
-          </section>
+        </div>
+        <section>
+          <div>
+            <MonthlyInfo />
+        
+          <TransactionsList
+            transactions={recurring_transactions}
+            emptyMessage={`No transactions in ${monthLabel}.`}
+            accountNameById={accountNameById}
+            tags={tags}
+          />
+</div>
+        </section>
+        <section>
           {accounts.length === 0 ? (
             <p className="text-sm text-retro-muted">No accounts found.</p>
           ) : (

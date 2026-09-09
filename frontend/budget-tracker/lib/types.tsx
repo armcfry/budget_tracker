@@ -37,6 +37,7 @@ export type TransactionFilters = {
   tags?: string[];
   amountMin?: number;
   amountMax?: number;
+  recurring?: boolean;
 };
 
 export type TransactionSortField = "date" | "amount" | "description";

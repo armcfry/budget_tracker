@@ -68,6 +68,9 @@ export async function getTransactions(
   if (filters.amountMax != null) {
     params.set("amount_max", String(filters.amountMax));
   }
+  if (filters.recurring != null) {
+    params.set("recurring", String(filters.recurring));
+  }
 
   try {
     const res = await fetch(`${API_URL}/transactions?${params}`, {

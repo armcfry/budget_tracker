@@ -96,10 +96,9 @@ export default async function AccountDetailPage({
 
   function buildSortHref(field: TransactionSortField) {
     const params = new URLSearchParams();
-    if (hasExplicitFilters) {
-      if (dateMinFilter) params.set("date_min", dateMinFilter);
-      if (dateMaxFilter) params.set("date_max", dateMaxFilter);
-    }
+    params.set("date_min", dateMinFilter);
+    params.set("date_max", dateMaxFilter);
+
     if (tagsFilter.length) params.set("tags", tagsFilter.join(","));
     if (amountMinFilter) params.set("amount_min", amountMinFilter);
     if (amountMaxFilter) params.set("amount_max", amountMaxFilter);
@@ -112,15 +111,15 @@ export default async function AccountDetailPage({
 
   function buildTagFilterHref(tagName: string) {
     const params = new URLSearchParams();
-    if (hasExplicitFilters) {
-      if (dateMinFilter) params.set("date_min", dateMinFilter);
-      if (dateMaxFilter) params.set("date_max", dateMaxFilter);
-    }
+    params.set("date_min", dateMinFilter);
+    params.set("date_max", dateMaxFilter);
+
     params.set("tags", tagName);
     if (amountMinFilter) params.set("amount_min", amountMinFilter);
     if (amountMaxFilter) params.set("amount_max", amountMaxFilter);
     params.set("sort", sortField);
     params.set("dir", sortDirection);
+    console.log(`/accounts/${accountId}?${params.toString()}`)
     return `/accounts/${accountId}?${params.toString()}`;
   }
 
@@ -128,6 +127,7 @@ export default async function AccountDetailPage({
     Array.from(tagColorByName.keys()).map((name) => [name, buildTagFilterHref(name)])
   );
 
+  // used for closing the currently filtered tag
   function buildRemoveTagHref(tagName: string) {
     const remainingTags = tagsFilter.filter((t) => t !== tagName);
     const params = new URLSearchParams();
