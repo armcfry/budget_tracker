@@ -12,7 +12,7 @@ export default async function Home() {
 
   const [accounts, transactions, recurring_transactions, tags] = await Promise.all([
     getAccounts(),
-    getTransactions({ dateMin: start, dateMax: end, recurring: false}),
+    getTransactions({ dateMin: start, dateMax: end, recurring: false }),
     getTransactions({ dateMin: start, dateMax: end, recurring: true }),
     getTags(),
   ]);
@@ -32,14 +32,14 @@ export default async function Home() {
         <section>
           <div>
             <MonthlyInfo />
-        
-          <TransactionsList
-            transactions={recurring_transactions}
-            emptyMessage={`No transactions in ${monthLabel}.`}
-            accountNameById={accountNameById}
-            tags={tags}
-          />
-</div>
+
+            <TransactionsList
+              transactions={recurring_transactions}
+              emptyMessage={`No recurring transactions in ${monthLabel}.`}
+              accountNameById={accountNameById}
+              tags={tags}
+            />
+          </div>
         </section>
         <section>
           {accounts.length === 0 ? (
