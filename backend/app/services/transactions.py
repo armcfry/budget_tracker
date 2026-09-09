@@ -8,22 +8,6 @@ from app.models.transaction import Transaction, TransactionCreate, TransactionUp
 from sqlalchemy.orm import Session, joinedload
 
 
-def _resolve_tags(db: Session, tags: list[str]) -> list[Tag]:
-    """Look up tags by name, creating any that don't exist yet."""
-    if not tags:
-        return []
-
-    existing = db.query(Tag).filter(Tag.name.in_(tags)).all()
-    existing_names = {t.name for t in existing}
-
-    new_tags = [Tag(name=name) for name in tags if name not in existing_names]
-    if new_tags:
-        db.add_all(new_tags)
-        db.flush()  # assigns ids to new_tags without committing yet
-
-    return existing + new_tags
-
-
 def get_transactions(
     db: Session,
     account_id: int = None,
@@ -33,6 +17,7 @@ def get_transactions(
     tags: list[str] = None,
     amount_min: float = None,
     amount_max: float = None,
+    recurring: bool = None
 ) -> list[Transaction]:
 
     stmt = select(Transaction)
@@ -58,6 +43,9 @@ def get_transactions(
 
     if amount_max is not None:
         conditions.append(Transaction.amount <= amount_max)
+
+    if recurring is not None:
+        conditions.append(Transaction.recurring == recurring)
 
     if conditions:
         stmt = stmt.where(*conditions)
@@ -130,3 +118,18 @@ def delete_transaction(db: Session, transaction_id: int) -> bool:
     db.delete(transaction)
     db.commit()
     return True
+
+def _resolve_tags(db: Session, tags: list[str]) -> list[Tag]:
+    """Look up tags by name, creating any that don't exist yet."""
+    if not tags:
+        return []
+
+    existing = db.query(Tag).filter(Tag.name.in_(tags)).all()
+    existing_names = {t.name for t in existing}
+
+    new_tags = [Tag(name=name) for name in tags if name not in existing_names]
+    if new_tags:
+        db.add_all(new_tags)
+        db.flush()  # assigns ids to new_tags without committing yet
+
+    return existing + new_tags

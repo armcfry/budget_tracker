@@ -67,7 +67,8 @@ CREATE TABLE transactions (
     account_id                  INT           NOT NULL REFERENCES accounts(id),
     date_value                  DATE          NOT NULL,
     description                 VARCHAR(200)  NOT NULL,
-    amount                      DECIMAL(12,2) NOT NULL
+    amount                      DECIMAL(12,2) NOT NULL,
+    recurring                   BOOLEAN       NOT NULL DEFAULT FALSE
 );
 
 -- Indexes for common dashboard queries

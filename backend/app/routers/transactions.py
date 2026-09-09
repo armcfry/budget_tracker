@@ -25,6 +25,7 @@ def list_transactions(
     tags: list[str] = Query(default=None),
     amount_min: float = None,
     amount_max: float = None,
+    recurring: bool = Query(default=None, description="Filter by recurring status")
 ):
     return svc.get_transactions(
         db,
@@ -35,6 +36,7 @@ def list_transactions(
         tags=tags,
         amount_min=amount_min,
         amount_max=amount_max,
+        recurring=recurring
     )
 
 

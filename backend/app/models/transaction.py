@@ -13,6 +13,7 @@ class TransactionBase(SQLModel):
     description: str
     amount: Decimal
     account_id: int = Field(foreign_key="accounts.id")
+    recurring: bool = Field(default=False, nullable=False)
 
 
 class Transaction(TransactionBase, table=True):
@@ -35,6 +36,7 @@ class TransactionUpdate(SQLModel):
     description: Optional[str] = None
     amount: Optional[Decimal] = None
     account_id: Optional[int] = None
+    recurring: Optional[bool] = None
     tags: Optional[List[str]] = None
 
 
