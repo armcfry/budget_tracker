@@ -2,6 +2,7 @@ from datetime import date
 from typing import Annotated
 
 import app.services.transactions as svc
+import app.services.accounts as account_svc
 from app.db.session import get_db
 from app.models.transaction import (
     TransactionCreate,
@@ -54,10 +55,17 @@ def get_transaction(
     return row
 
 
-@router.post("", response_model=TransactionRead, status_code=201)
+@router.post("", response_model=TransactionRead,
+            responses={201: {"description": "Transaction created successfully"}, 
+                        404: {"description": "Account not found"}})
 def create_transaction(
     data: TransactionCreate, db: Annotated[Session, Depends(get_db)] = None
 ):
+    # if account id is provided, check if the account exists
+    if data.account_id is not None:
+        account = account_svc.get_account(db, data.account_id)
+        if not account:
+            raise HTTPException(status_code=404, detail="Account not found")
     return svc.create_transaction(db, data)
 
 
