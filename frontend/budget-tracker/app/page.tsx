@@ -31,7 +31,9 @@ export default async function Home() {
         </div>
         <section>
           <div>
-            <MonthlyInfo />
+            <MonthlyInfo 
+              transactions={recurring_transactions}
+            />
 
             <TransactionsList
               transactions={recurring_transactions}

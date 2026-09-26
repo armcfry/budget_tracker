@@ -36,12 +36,14 @@ export default function TransactionForm({
 
     const magnitude = Math.abs(Number(formData.get("amount")));
     const isIncome = formData.get("is_income") === "on";
+    const isRecurring = formData.get("is_recurring") === "on";
     
     onSubmit({
       date_value: getString("date_value"),
       description: getString("description"),
       amount: isIncome ? magnitude : -magnitude,
       account_id: Number(formData.get("account_id")),
+      recurring: isRecurring,
       tags,
     });
   }
@@ -66,13 +68,22 @@ export default function TransactionForm({
         size="sm"
         required
       />
-
+      
+      <div className="flex flex-wrap items-center gap-2">
       <PixelCheckbox
         label="Income"
         name="is_income"
         defaultChecked={initialData.amount != null ? initialData.amount > 0 : false}
         tone="green"
       />
+
+      <PixelCheckbox
+        label="Recurring"
+        name="is_recurring"
+        defaultChecked={initialData.recurring ?? false}
+        tone="green"
+      />
+      </div>
 
       <PixelInput
         label="Description"

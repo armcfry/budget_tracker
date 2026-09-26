@@ -18,6 +18,7 @@ export type Transaction = {
   description: string;
   amount: number;
   account_id: number;
+  recurring: boolean;
   tags: Tag[];
 };
 
@@ -26,6 +27,7 @@ export type TransactionInput = {
   description: string;
   amount: number;
   account_id: number;
+  recurring: boolean;
   tags: string[];
 };
 
